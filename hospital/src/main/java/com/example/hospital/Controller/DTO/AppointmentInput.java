@@ -14,9 +14,9 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 public class AppointmentInput {
-    @NotNull(message = "Staff ID is null")
-    @NotEmpty(message = "Staff ID is null")
-    private String staffId;
+    @NotNull(message = "College number is null")
+    @NotEmpty(message = "College number ID is null")
+    private String collegeNumber;
     @NotNull(message = "Patient ID is null")
     @NotEmpty(message = "Patient ID is null")
     private String patientId;
@@ -24,9 +24,9 @@ public class AppointmentInput {
     private LocalDate dateOfAppointment;
     private LocalTime timeOfAppointment;
 
-    public AppointmentInput(String staffId, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {
-        validateId(staffId);
-        this.staffId = staffId;
+    public AppointmentInput(String collegeNumber, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {
+        validateId(collegeNumber);
+        this.collegeNumber = collegeNumber;
         validateId(patientId);
         this.patientId = patientId;
         this.dateOfAppointment = dateOfAppointment;
@@ -40,7 +40,7 @@ public class AppointmentInput {
     }
 
     public static Appointment getAppointment(AppointmentInput appointmentInput) throws InvalidException {
-    return new Appointment(appointmentInput.getStaffId(), appointmentInput.getPatientId(),
+    return new Appointment(appointmentInput.getCollegeNumber(), appointmentInput.getPatientId(),
             appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment());
     }
 }

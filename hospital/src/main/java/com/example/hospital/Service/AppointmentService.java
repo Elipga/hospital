@@ -10,12 +10,14 @@ import com.example.hospital.Repository.AppointmentRepository;
 import com.example.hospital.Repository.DoctorRepository;
 import com.example.hospital.Repository.NurseRepository;
 import com.example.hospital.Repository.PatientRepository;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +40,56 @@ public class AppointmentService {
     public List<AppointmentOutput> getAllAppointments() throws IsEmptyException {
         List<Appointment> appointments = appointmentRepository.findAll();
         List<AppointmentOutput> appointmentsOutput = new ArrayList<>();
-        if(appointments.isEmpty()) throw new IsEmptyException("List of appointments is empty");
+        if (appointments.isEmpty()) throw new IsEmptyException("List of appointments is empty");
 
+
+        for (Appointment appointment : appointments) {
+            appointmentsOutput.add(AppointmentOutput.getAppointment(appointment));
+        }
+        return appointmentsOutput;
+    }
+
+    public Optional<? extends HealthStaff> doctorOrNurse(String collegeNumber) {
+        if (doctorRepository.existsById(collegeNumber))
+            return doctorRepository.findById(collegeNumber);
+        else return nurseRepository.findById(collegeNumber);
+    }
+
+    public boolean isDoctorOrNurse(String collegeNumber){
+        boolean isDoctor = false;
+        if(doctorRepository.existsById(collegeNumber))
+            return isDoctor = true;
+        else return isDoctor = false;
+    }
+
+
+    public void addAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, TimeOutOfRangeException, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, InvalidException {
+        if ((!doctorRepository.existsById(appointmentInput.getCollegeNumber()) &&
+                (!nurseRepository.existsById(appointmentInput.getCollegeNumber()))))
+            throw new StaffDoesNotExists("Health staff does not exist");
+        Optional<? extends HealthStaff> healthStaff = doctorOrNurse(appointmentInput.getCollegeNumber());
+        if (appointmentInput.getTimeOfAppointment().isBefore(healthStaff.get().getStartingTime()) ||
+                appointmentInput.getTimeOfAppointment().isAfter(healthStaff.get().getEndingTime())) throw new
+                TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff
+        if (!patientRepository.existsById(appointmentInput.getPatientId())) throw new PatientDoesNotExists
+                ("Patient does not exists");
+        if (appointmentRepository.existsByCollegeNumberAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getCollegeNumber(),
+                appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
+                AlreadyExistsException("Appointment already exists");
+        if (temporalWindow(appointmentInput.getDateOfAppointment()) == false) throw new DateOutOfRange("Date" +
+                "out of temporal window");
+        Appointment newAppointment = AppointmentInput.getAppointment(appointmentInput);
+        appointmentRepository.save(newAppointment);
+    }
+
+    public List<AppointmentOutput> getAppointmentsofDoctorAndWeek(String collegeNumber) throws StaffDoesNotExists, DoctorDoesNotExists {
+        if ((!doctorRepository.existsById(collegeNumber) &&
+                (!nurseRepository.existsById(collegeNumber))))
+            throw new StaffDoesNotExists("Health staff doesn't exist");
+        if(isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        List<Appointment> appointments = appointmentRepository.findByCollegeNumberBetween(collegeNumber,
+                appointmentsOfWeek());
+        List<AppointmentOutput> appointmentsOutput = new ArrayList<>();
 
         for(Appointment appointment: appointments){
             appointmentsOutput.add(AppointmentOutput.getAppointment(appointment));
@@ -47,95 +97,72 @@ public class AppointmentService {
         return appointmentsOutput;
     }
 
-    public Optional<? extends HealthStaff> doctorOrNurse(String staffId){
-        if(doctorRepository.existsById(staffId))
-            return doctorRepository.findById(staffId);
-        else return nurseRepository.findById(staffId);
+
+    public List<AppointmentOutput> getAppointmentsOfPatient(String patienId, String dateOfAppointment) throws PatientDoesNotExists, IsEmptyException {
+        if (!patientRepository.existsById(patienId)) throw new PatientDoesNotExists("Patient doesn´t" +
+                "exist");
+        LocalDate date = LocalDate.parse(dateOfAppointment);
+        List<Appointment> appointments = appointmentRepository.findByPatientIdAndDateOfAppointmentOrderByTimeOfAppointment(patienId, date);
+        if(appointments.isEmpty()) throw new IsEmptyException("Patient doesn´t have appointments that day");
+        List<AppointmentOutput> appointmentOutputs = new ArrayList<>();
+
+        for(Appointment appointment: appointments){
+            appointmentOutputs.add(AppointmentOutput.getAppointment(appointment));
+        }
+        return appointmentOutputs;
     }
 
+    public Pair<LocalDate, LocalDate> appointmentsOfWeek(){
+        LocalDate date = LocalDate.now();
+        LocalDate firstDay = LocalDate.now();
+        LocalDate lastDay = LocalDate.now();
+        int i = 0;
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        DayOfWeek[] daysOfWeekArray = DayOfWeek.values(); //array with days of week
+        List<DayOfWeek> daysOfWeek = Arrays.asList(daysOfWeekArray); //array to list
 
-    public void addAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, TimeOutOfRangeException, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, InvalidException {
-        System.out.println("1");
-        System.out.println(appointmentInput.getStaffId());
-        System.out.println(appointmentInput.getPatientId());
-        System.out.println(appointmentInput.getDateOfAppointment());
-        System.out.println(appointmentInput.getTimeOfAppointment());
-        if ((!doctorRepository.existsById(appointmentInput.getStaffId()) &&
-                (!nurseRepository.existsById(appointmentInput.getStaffId())))) throw new StaffDoesNotExists ("Health staff does not exist");
-        System.out.println("2");
-        Optional<? extends HealthStaff> healthStaff = doctorOrNurse(appointmentInput.getStaffId());
-        System.out.println("3");
-        if (appointmentInput.getTimeOfAppointment().isBefore(healthStaff.get().getStartingTime()) ||
-                appointmentInput.getTimeOfAppointment().isAfter(healthStaff.get().getEndingTime())) throw new
-                TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff
-        System.out.println("4");
-        if (!patientRepository.existsById(appointmentInput.getPatientId())) throw new PatientDoesNotExists
-                ("Patient does not exists");
-        System.out.println("5");
-        if (appointmentRepository.existsByStaffIdAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getStaffId(),
-                appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
-                AlreadyExistsException("Appointment already exists");
-        System.out.println("6");
-        if(temporalWindow(appointmentInput.getDateOfAppointment()) == false) throw new DateOutOfRange("Date" +
-                "out of temporal window");
-        System.out.println("7");
-        Appointment newAppointment = AppointmentInput.getAppointment(appointmentInput);
-        System.out.println("8");
-        appointmentRepository.save(newAppointment);
-        System.out.println("9");
+        for(DayOfWeek day: daysOfWeek){
+            if(day == DayOfWeek.SATURDAY){
+                firstDay = date.plusDays(2);
+                lastDay = firstDay.plusDays(4);
+            }
+            if(day == DayOfWeek.SUNDAY){
+                firstDay = date.plusDays(1);
+                lastDay = firstDay.plusDays(4);
+            }
+            if(day == dayOfWeek){
+               firstDay = date; //Ej: if it´s Tuesday, starting date is date of now
+               lastDay = date.plusDays(4 - i); //ending date is Tuesday + 3 days = Friday
+               break;
+            }
+            i++;
+        }
+        return Pair.of(firstDay,lastDay);
     }
 
     public boolean temporalWindow(LocalDate dateOfAppointment) {
         LocalDate date = LocalDate.now();
         LocalDate startingDate = LocalDate.now();
-        LocalDate endingDate = startingDate.plusDays(4);
+        LocalDate endingDate;
         boolean appointmentIsPosible = true;
+        int i = 0;
 
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-        switch (dayOfWeek) {
-            case MONDAY:
-                startingDate = date.plusDays(7);
+        DayOfWeek[] daysOfWeekArray = DayOfWeek.values(); //array with days of week
+        List<DayOfWeek> daysOfWeek = Arrays.asList(daysOfWeekArray); //array to list
+
+        for (DayOfWeek day : daysOfWeek) { //Iterate through the list of the days of the week
+            if (date.getDayOfWeek() == day) { //know day of the week when asking for appointment
+                startingDate = date.plusDays(7 - i); //set starting date for next Monday
                 endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
+                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate)) {
                     appointmentIsPosible = false;
-                break;
-            case TUESDAY:
-                startingDate = date.plusDays(6);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
-            case WEDNESDAY:
-                startingDate = date.plusDays(5);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
-            case THURSDAY:
-                startingDate = date.plusDays(4);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
-            case FRIDAY:
-                startingDate = date.plusDays(3);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
-            case SATURDAY:
-                startingDate = date.plusDays(2);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
-            case SUNDAY:
-                startingDate = date.plusDays(1);
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate))
-                    appointmentIsPosible = false;
-                break;
+                    break;
+                }
+            }
+            i++;
+            System.out.println();
         }
         return appointmentIsPosible;
     }

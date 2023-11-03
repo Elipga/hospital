@@ -21,6 +21,7 @@ public class HealthStaff {
     @NotNull(message = "ID is null")
     @NotEmpty(message = "ID is null")
     private String id;
+    @Id
     @NotNull(message = "College number is null")
     @NotEmpty(message = "College number is null")
     private String collegeNumber;

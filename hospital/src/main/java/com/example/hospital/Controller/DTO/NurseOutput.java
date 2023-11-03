@@ -1,17 +1,12 @@
 package com.example.hospital.Controller.DTO;
 
-import com.example.hospital.Domain.Doctor;
-import com.example.hospital.Domain.Timetable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.hospital.Domain.Nurse;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
-@Getter
-@NoArgsConstructor
-public class DoctorOutput {
+public class NurseOutput {
     @NotNull(message = "ID is null")
     @NotEmpty(message = "ID is null")
     private String id;
@@ -34,7 +29,7 @@ public class DoctorOutput {
     //@Max(value = 20, message = "Maximum ending time is 20h")
     private LocalTime endingTime;
 
-    public DoctorOutput(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) {
+    public NurseOutput(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) {
         this.id = id;
         this.collegeNumber = collegeNumber;
         this.name = name;
@@ -42,8 +37,8 @@ public class DoctorOutput {
         this.endingTime = endingTime;
     }
 
-    public static DoctorOutput getDoctor(Doctor doctor) {
-        return new DoctorOutput(doctor.getId(), doctor.getCollegeNumber(), doctor.getName(), doctor.getStartingTime(),
-                doctor.getEndingTime());
+    public static NurseOutput getNurse(Nurse nurse) {
+        return new NurseOutput(nurse.getId(),nurse.getCollegeNumber(), nurse.getName(), nurse.getStartingTime(),
+                nurse.getEndingTime());
     }
 }

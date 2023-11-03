@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class Appointment {
     @Id
-    private String staffId;
+    private String collegeNumber;
     @Id
     private String patientId;
     @Id
@@ -26,9 +26,9 @@ public class Appointment {
     private LocalTime timeOfAppointment;
 
 
-    public Appointment(String staffId, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {
-        validateId(staffId);
-        this.staffId = staffId;
+    public Appointment(String collegeNumber, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {
+        validateId(collegeNumber);
+        this.collegeNumber = collegeNumber;
         validateId(patientId);
         this.patientId = patientId;
         this.dateOfAppointment = dateOfAppointment;

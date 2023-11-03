@@ -32,9 +32,8 @@ public class DoctorService {
 
     public void addDoctor(DoctorInput doctorInput) throws AlreadyExistsException, InvalidException {
         Doctor newDoctor = DoctorInput.getDoctor(doctorInput);
-        HealthStaff newStaff = DoctorInput.getStaff(doctorInput);
-        if(doctorRepository.existsById(doctorInput.getId())) throw new AlreadyExistsException
-                ("Patient already exists");
+        if(doctorRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
+                ("Doctor already exists");
         else {doctorRepository.save(newDoctor);
         }
     }

@@ -13,9 +13,9 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 public class AppointmentOutput {
-    @NotNull(message = "Staff ID is null")
-    @NotEmpty(message = "Staff ID is null")
-    private String staffId;
+    @NotNull(message = "College Number is null")
+    @NotEmpty(message = "College Number is null")
+    private String collegeNumber;
     @NotNull(message = "Patient ID is null")
     @NotEmpty(message = "Patient ID is null")
     private String patientId;
@@ -29,15 +29,15 @@ public class AppointmentOutput {
     @NotEmpty(message = "Time of appointment is null")
     private LocalTime timeOfAppointment;
 
-    public AppointmentOutput(String staffId, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) {
-        this.staffId = staffId;
+    public AppointmentOutput(String collegeNumber, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) {
+        this.collegeNumber = collegeNumber;
         this.patientId = patientId;
         this.dateOfAppointment = dateOfAppointment;
         this.timeOfAppointment = timeOfAppointment;
     }
 
     public static AppointmentOutput getAppointment(Appointment appointment) {
-        return new AppointmentOutput(appointment.getStaffId(), appointment.getPatientId(), appointment.getDateOfAppointment(),
+        return new AppointmentOutput(appointment.getCollegeNumber(), appointment.getPatientId(), appointment.getDateOfAppointment(),
                 appointment.getTimeOfAppointment());
     }
 }

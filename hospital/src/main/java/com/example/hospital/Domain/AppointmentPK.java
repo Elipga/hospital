@@ -15,13 +15,13 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class AppointmentPK implements Serializable {
 
-    private String staffId;
+    private String collegeNumber;
     private String patientId;
     private LocalDate dateOfAppointment;
     private LocalTime timeOfAppointment;
 
-    public AppointmentPK(String staffId, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) {
-        this.staffId = staffId;
+    public AppointmentPK(String collegeNumber, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) {
+        this.collegeNumber = collegeNumber;
         this.patientId = patientId;
         this.dateOfAppointment = dateOfAppointment;
         this.timeOfAppointment = timeOfAppointment;

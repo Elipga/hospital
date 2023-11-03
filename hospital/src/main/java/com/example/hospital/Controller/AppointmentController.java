@@ -7,12 +7,10 @@ import com.example.hospital.Service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -41,7 +39,7 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentOutput>> getAllAppointments(){
         try {
             List<AppointmentOutput> appointmentsOutput = appointmentService.getAllAppointments();
@@ -49,5 +47,32 @@ public class AppointmentController {
         } catch (IsEmptyException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
+    }
+
+    @RequestMapping(value = "/appointments", params = {"patientId","dateOfAppointment"})
+    public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfPatient
+            (@RequestParam String patientId, @RequestParam String dateOfAppointment){
+        try {
+            List<AppointmentOutput> appointmenstOutput = appointmentService.getAppointmentsOfPatient(patientId,dateOfAppointment);
+            return ResponseEntity.ok(appointmenstOutput);
+        } catch (PatientDoesNotExists e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IsEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+    }
+
+    @RequestMapping(value = "/appointments", params = {"collegeNumber"})
+    public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfDoctorAndWeek(
+            @RequestParam String collegeNumber){
+        try {
+            List<AppointmentOutput> appointmentsOutput = appointmentService.getAppointmentsofDoctorAndWeek(collegeNumber);
+            return ResponseEntity.ok(appointmentsOutput);
+        } catch (StaffDoesNotExists e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (DoctorDoesNotExists e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
 }
