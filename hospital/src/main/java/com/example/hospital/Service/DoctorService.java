@@ -34,6 +34,8 @@ public class DoctorService {
         Doctor newDoctor = DoctorInput.getDoctor(doctorInput);
         if(doctorRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Doctor already exists");
+        if(doctorRepository.existsById(doctorInput.getId())) throw new AlreadyExistsException
+                ("Doctor already exists");
         else {doctorRepository.save(newDoctor);
         }
     }

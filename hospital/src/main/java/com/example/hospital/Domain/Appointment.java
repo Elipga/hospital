@@ -27,7 +27,6 @@ public class Appointment {
 
 
     public Appointment(String collegeNumber, String patientId, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {
-        validateId(collegeNumber);
         this.collegeNumber = collegeNumber;
         validateId(patientId);
         this.patientId = patientId;

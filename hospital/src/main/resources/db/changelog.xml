@@ -10,7 +10,7 @@
     </changeSet>
 
     <changeSet id="2" author="elisa">
-        <sqlFile path="scripts/02_create_table_appointments.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
+        <sqlFile path="scripts/02_create_table_health_staff.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
     </changeSet>
 
     <changeSet id="3" author="elisa">
@@ -19,6 +19,14 @@
 
     <changeSet id="4" author="elisa">
         <sqlFile path="scripts/04_create_table_nurses.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="5" author="elisa">
+        <sqlFile path="scripts/05_create_table_appointments.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="6" author="elisa">
+        <sqlFile path="scripts/06_create_table_availabilities.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
     </changeSet>
 
 </databaseChangeLog>

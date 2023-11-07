@@ -1,7 +1,6 @@
 package com.example.hospital.Controller.DTO;
 
 import com.example.hospital.Domain.Doctor;
-import com.example.hospital.Domain.Timetable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

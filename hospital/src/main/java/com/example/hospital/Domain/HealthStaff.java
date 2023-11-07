@@ -17,7 +17,6 @@ import java.time.LocalTime;
 @Table(name = "health_staff")
 @NoArgsConstructor
 public class HealthStaff {
-    @Id
     @NotNull(message = "ID is null")
     @NotEmpty(message = "ID is null")
     private String id;
