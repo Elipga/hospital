@@ -49,9 +49,22 @@ public class AppointmentController {
         }
     }
 
-    @RequestMapping(value = "/appointments", params = {"patientId","dateOfAppointment"})
+    /*@RequestMapping(value = "/appointments", params = {"patientId","dateOfAppointment"})
     public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfPatient
             (@RequestParam String patientId, @RequestParam String dateOfAppointment){
+        try {
+            List<AppointmentOutput> appointmenstOutput = appointmentService.getAppointmentsOfPatient(patientId,dateOfAppointment);
+            return ResponseEntity.ok(appointmenstOutput);
+        } catch (PatientDoesNotExists e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IsEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+    }*/
+
+    @RequestMapping(value = "patients/{patientId}/appointments", params = {"dateOfAppointment"})
+    public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfPatient
+            (@PathVariable String patientId, @RequestParam String dateOfAppointment){
         try {
             List<AppointmentOutput> appointmenstOutput = appointmentService.getAppointmentsOfPatient(patientId,dateOfAppointment);
             return ResponseEntity.ok(appointmenstOutput);
@@ -73,6 +86,5 @@ public class AppointmentController {
         } catch (DoctorDoesNotExists e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
 }

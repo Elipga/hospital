@@ -22,6 +22,8 @@ public class DoctorInput {
     @NotEmpty(message = "College number is null")
     private String collegeNumber;
 
+    @NotNull(message = "Name is null")
+    @NotEmpty(message = "Name is null")
     private String name;
 
     @Min(value = 0, message = "Minimum years experience is 0")

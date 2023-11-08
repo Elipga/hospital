@@ -17,7 +17,7 @@ public class AvailabilityController {
     @Autowired
     AvailabilityService availabilityService;
 
-    @RequestMapping(value = "/availabilities", params = {"collegeNumber"})
+    /*@RequestMapping(value = "/availabilities", params = {"collegeNumber"})
     //@GetMapping("/doctors/{collegueNumber}/availabilities")
     public ResponseEntity <List<AvailabilityOutput>> getAvailabilityOfStaff(@RequestParam String collegeNumber){
         List<AvailabilityOutput> availabilityOutputs = null;
@@ -27,7 +27,7 @@ public class AvailabilityController {
         } catch (StaffDoesNotExists e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
+    }*/
 
     @GetMapping("/doctors/{collegeNumber}/availabilities")
     public ResponseEntity <List<AvailabilityOutput>> getAvailabilityOfDoctor(@PathVariable String collegeNumber){

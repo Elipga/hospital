@@ -84,9 +84,6 @@ public class AppointmentService {
         appointmentRepository.save(newAppointment);
     }
 
-
-
-
     public List<AppointmentOutput> getAppointmentsOfPatient(String patienId, String dateOfAppointment) throws PatientDoesNotExists, IsEmptyException {
         if (!patientRepository.existsById(patienId)) throw new PatientDoesNotExists("Patient doesn´t" +
                 "exist");

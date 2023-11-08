@@ -18,21 +18,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
             (String collegeNumber, LocalDate dateOfAppointment,LocalTime timeOfAppointment);
     List<Appointment> findByPatientIdAndDateOfAppointmentOrderByTimeOfAppointment (String patienId,
                                                                                    LocalDate dateOfAppointment);
-    List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(String collegeNumber, LocalDate firstDay, LocalDate lastDay);
+    List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(String collegeNumber,
+                                                                     LocalDate firstDay, LocalDate lastDay);
 
-    /*@Query("SELECT a FROM Appointment a " +
-            "WHERE a.collegeNumber = :collegeNumber " +
-            "AND a.dateOfAppointment BETWEEN :firstDay AND :lastDay")
-    List<Appointment> findByCollegeNumberBetween(
-            @Param("collegeNumber") String collegeNumber,
-            @Param("firstDay") LocalDate firstDay,
-            @Param("lastDay") LocalDate lastDay
-    );*/
+    //@Query("SELECT a FROM Appointment a WHERE a.collegeNumber = :collegeNumber AND a.dateOfAppointment BETWEEN :firstDay AND :lastDay")
+    //List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(@Param("collegeNumber") String collegeNumber, @Param("firstDay") LocalDate firstDay, @Param("lastDay") LocalDate lastDay);
 
-    /*@Query("SELECT a FROM Appointment a " +
-            "WHERE a.patientId = :patientId " +
-            "AND a.dateOfAppointment = :dateOfAppointment " +
-            "ORDER BY a.timeOfAppointment ASC")
-    List<Appointment> findByPatientIdAndDateOfAppointmentOrderByTimeOfAppointment
-            (@Param("patientId") String patientId, @Param("dateOfAppointment") LocalDate dateOfAppointment);*/
 }
