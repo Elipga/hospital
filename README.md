@@ -1,5 +1,4 @@
-# hospital
-PROYECTO FINAL “CURSO DE PROGRAMACIÓN PROFESIONAL DESDE 0”. 2022
+# PROYECTO FINAL “CURSO DE PROGRAMACIÓN PROFESIONAL DESDE 0”
 Se desea implementar un sistema de citas en un hospital. Para ello tendremos a los pacientes, donde
 guardaremos su nombre, dni y dirección. También tendremos al personal sanitario, que pueden ser
 médicos o enfermeros. De ambos pretendemos guardar también el nombre, dni y número de
@@ -40,3 +39,10 @@ realizado respecto al UML original y por qué.
 - La API se tiene que poder documentar usando “Swagger” para Spring boot. Es tarea vuestra
 aprender a usar esta herramienta.
 - El UML del sistema y las decisiones de backend tomadas se entregarán en un PDF.
+- El código, como siempre, en Github
+FECHA DE ENTREGA: lunes 28 de noviembre.
+Se valorará:
+- Claridad de código.
+- Correcta separación en capas.
+- Gestión de excepciones
+- Decisiones de diseño e implementación tomadas.
