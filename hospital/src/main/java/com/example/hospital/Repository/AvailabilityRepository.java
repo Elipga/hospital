@@ -13,15 +13,11 @@ import java.util.List;
 
 @Repository
 public interface AvailabilityRepository extends JpaRepository<Availability, String> {
-    //List<Availability> findByCollegeNumberOrderByDayAndHour(String collegeNumber, LocalDate day, LocalTime hour);
     List<Availability> findByCollegeNumberAndDayBetweenOrderByDay (String collegeNumber, LocalDate firstDay, LocalDate lastDay);
 
     List<Availability> findByCollegeNumber(String collegeNumber);
 
+
     @Transactional //to make sure that everything has been deleted
     void removeByCollegeNumber(String collegeNumber);
-
-    //Transactional
-    //@Query("DELETE FROM Availability e WHERE e.collegeNumber = :collegeNumber")
-    //void deleteByCollegeNumber(@Param("collegeNumber") String collegeNumber);
 }

@@ -40,10 +40,10 @@ public class NurseController {
     }
 
     @PutMapping("/nurses/{collegeNumber}")
-    public ResponseEntity<NurseOutputCNumberAndTimetable> setTimetableOfNurse(@PathVariable String collegeNumber,
+    public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfNurse(@PathVariable String collegeNumber,
                                                                                 @RequestBody HealthStaffUpdate healthStaffUpdate) {
         try {
-            NurseOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
+            HealthStaffOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(nurse);
         } catch (StaffDoesNotExists e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -32,6 +32,7 @@ public class Availability {
     private LocalTime hour;
 
 
+
     public Availability(String collegeNumber, LocalDate day, LocalTime hour) {
         this.collegeNumber = collegeNumber;
         this.day = day;

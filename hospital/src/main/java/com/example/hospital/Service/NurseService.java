@@ -35,13 +35,19 @@ public class NurseService {
 
     public void addNurse(NurseInput nurseInput) throws AlreadyExistsException, InvalidException {
         Nurse newNurse = NurseInput.getNurse(nurseInput);
+        if(doctorRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
+                ("Doctor already exists");
+        if(doctorRepository.existsById(nurseInput.getId())) throw new AlreadyExistsException
+                ("Doctor already exists");
         if(nurseRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
+                ("Nurse already exists");
+        if(nurseRepository.existsById(nurseInput.getId())) throw new AlreadyExistsException
                 ("Nurse already exists");
         else {nurseRepository.save(newNurse);
         }
     }
 
-    public NurseOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, NurseDoesNotExists {
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, NurseDoesNotExists {
         if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
             throw new StaffDoesNotExists("Health staff does not exist");
         if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");
@@ -50,7 +56,7 @@ public class NurseService {
         nurseSet.setStartingTime(healthStaffUpdate.getStartingTime());
         nurseSet.setEndingTime(healthStaffUpdate.getEndingTime());
         nurseRepository.save(nurseSet);
-        return NurseOutputCNumberAndTimetable.getNurse(collegeNumber, healthStaffUpdate);
+        return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
     }
 
     public boolean isDoctorOrNurse(String collegeNumber){

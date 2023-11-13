@@ -1,11 +1,9 @@
 package com.example.hospital.Controller;
 
-import com.example.hospital.Controller.DTO.DoctorInput;
-import com.example.hospital.Controller.DTO.DoctorOutput;
-import com.example.hospital.Controller.DTO.DoctorOutputCNumberAndTimetable;
-import com.example.hospital.Controller.DTO.HealthStaffUpdate;
+import com.example.hospital.Controller.DTO.*;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.DoctorService;
+import io.swagger.annotations.ApiOperation;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,7 @@ public class DoctorController {
     DoctorService doctorService;
 
     @GetMapping("/doctors")
+    @ApiOperation(value = "Get doctors", notes = "Get information about doctors")
     public ResponseEntity<List<DoctorOutput>> getAllDoctors() {
         try {
             List<DoctorOutput> doctors = doctorService.getAllDoctors();
@@ -44,10 +43,10 @@ public class DoctorController {
     }
 
     @PutMapping("/doctors/{collegeNumber}")
-    public ResponseEntity<DoctorOutputCNumberAndTimetable> setTimetableOfDoctor(@PathVariable String collegeNumber,
-                                                                                @RequestBody HealthStaffUpdate healthStaffUpdate) {
+    public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfDoctor(@PathVariable String collegeNumber,
+                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) {
         try {
-            DoctorOutputCNumberAndTimetable doctor = doctorService.setTimeTableOfDoctor(collegeNumber, healthStaffUpdate);
+            HealthStaffOutputCNumberAndTimetable doctor = doctorService.setTimeTableOfDoctor(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(doctor);
         } catch (StaffDoesNotExists e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

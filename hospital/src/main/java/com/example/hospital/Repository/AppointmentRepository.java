@@ -20,8 +20,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
                                                                                    LocalDate dateOfAppointment);
     List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(String collegeNumber,
                                                                      LocalDate firstDay, LocalDate lastDay);
-
-    //@Query("SELECT a FROM Appointment a WHERE a.collegeNumber = :collegeNumber AND a.dateOfAppointment BETWEEN :firstDay AND :lastDay")
-    //List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(@Param("collegeNumber") String collegeNumber, @Param("firstDay") LocalDate firstDay, @Param("lastDay") LocalDate lastDay);
+    List<Appointment> findByCollegeNumber(String collegeNumber);
 
 }

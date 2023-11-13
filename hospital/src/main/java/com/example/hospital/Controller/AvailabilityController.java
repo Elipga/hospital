@@ -1,6 +1,8 @@
 package com.example.hospital.Controller;
 
 import com.example.hospital.Controller.DTO.AvailabilityOutput;
+import com.example.hospital.Controller.DTO.AvailabilityOutputHour;
+import com.example.hospital.Controller.DTO.DoctorOutputnumberOfAppointments;
 import com.example.hospital.Exception.DoctorDoesNotExists;
 import com.example.hospital.Exception.NurseDoesNotExists;
 import com.example.hospital.Exception.StaffDoesNotExists;
@@ -10,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.util.List;
+import java.util.TreeMap;
 
 @RestController
 public class AvailabilityController {
@@ -30,8 +34,8 @@ public class AvailabilityController {
     }*/
 
     @GetMapping("/doctors/{collegeNumber}/availabilities")
-    public ResponseEntity <List<AvailabilityOutput>> getAvailabilityOfDoctor(@PathVariable String collegeNumber){
-        List<AvailabilityOutput> availabilityOutputs = null;
+    public ResponseEntity <TreeMap<DayOfWeek, List<AvailabilityOutputHour>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber){
+        TreeMap<DayOfWeek, List<AvailabilityOutputHour>> availabilityOutputs = null;
         try {
             if(availabilityService.isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor" +
                     "doesn´t exist");
@@ -45,8 +49,8 @@ public class AvailabilityController {
     }
 
     @GetMapping("/nurses/{collegeNumber}/availabilities")
-    public ResponseEntity <List<AvailabilityOutput>> getAvailabilityOfNurse(@PathVariable String collegeNumber){
-        List<AvailabilityOutput> availabilityOutputs = null;
+    public ResponseEntity <TreeMap<DayOfWeek, List<AvailabilityOutputHour>>> getAvailabilityOfNurse(@PathVariable String collegeNumber){
+        TreeMap<DayOfWeek, List<AvailabilityOutputHour>> availabilityOutputs = null;
         try {
             if(availabilityService.isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse" +
                     "doesn´t exist");
@@ -58,4 +62,6 @@ public class AvailabilityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+
 }

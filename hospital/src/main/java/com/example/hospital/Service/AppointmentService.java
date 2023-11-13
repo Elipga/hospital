@@ -3,25 +3,21 @@ package com.example.hospital.Service;
 
 import com.example.hospital.Controller.DTO.AppointmentInput;
 import com.example.hospital.Controller.DTO.AppointmentOutput;
+import com.example.hospital.Controller.DTO.DoctorOutputnumberOfAppointments;
 import com.example.hospital.Domain.Appointment;
+import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Domain.HealthStaff;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.AppointmentRepository;
 import com.example.hospital.Repository.DoctorRepository;
 import com.example.hospital.Repository.NurseRepository;
 import com.example.hospital.Repository.PatientRepository;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Array;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AppointmentService {
@@ -58,12 +54,10 @@ public class AppointmentService {
     }
 
     public boolean isDoctorOrNurse(String collegeNumber){
-        boolean isDoctor = false;
         if(doctorRepository.existsById(collegeNumber))
-            return isDoctor = true;
-        else return isDoctor = false;
+            return true;
+        else return false;
     }
-
 
     public void addAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, TimeOutOfRangeException, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, InvalidException {
         if ((!doctorRepository.existsById(appointmentInput.getCollegeNumber()) &&
@@ -103,7 +97,7 @@ public class AppointmentService {
                 (!nurseRepository.existsById(collegeNumber))))
             throw new StaffDoesNotExists("Health staff doesn't exist");
         if(isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
-        LocalDate[] dates = appointmentsOfWeek();
+        LocalDate[] dates = temporalWindowArray();
         LocalDate firstDay = dates[0];
         LocalDate lastDay = dates[1];
         List<Appointment> appointments = appointmentRepository.findByCollegeNumberAndDateOfAppointmentBetween(collegeNumber,
@@ -116,45 +110,12 @@ public class AppointmentService {
         return appointmentsOutput;
     }
 
-    public LocalDate[] appointmentsOfWeek(){
-        LocalDate date = LocalDate.now();
-        LocalDate firstDay = LocalDate.now();
-        LocalDate lastDay = LocalDate.now();
-        int i = 0;
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        DayOfWeek[] daysOfWeekArray = DayOfWeek.values(); //array with days of week
-        List<DayOfWeek> daysOfWeek = Arrays.asList(daysOfWeekArray); //array to list
-
-        for(DayOfWeek day: daysOfWeek){
-            if(day == DayOfWeek.SATURDAY){
-                firstDay = date.plusDays(2);
-                lastDay = firstDay.plusDays(4);
-            }
-            if(day == DayOfWeek.SUNDAY){
-                firstDay = date.plusDays(1);
-                lastDay = firstDay.plusDays(4);
-            }
-            if(day == dayOfWeek){
-               firstDay = date; //Ej: if it´s Tuesday, starting date is date of now
-               lastDay = date.plusDays(4 - i); //ending date is Tuesday + 3 days = Friday
-               break;
-            }
-            i++;
-        }
-        LocalDate[] dates = {firstDay, lastDay};
-
-        return dates;
-    }
-
     public LocalDate[] temporalWindowArray() {
         LocalDate date = LocalDate.now();
         LocalDate startingDate = LocalDate.now();
         LocalDate endingDate;
-        boolean appointmentIsPosible = true;
         int i = 0;
         LocalDate[] dates = new LocalDate[2];
-
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
 
         DayOfWeek[] daysOfWeekArray = DayOfWeek.values(); //array with days of week
         List<DayOfWeek> daysOfWeek = Arrays.asList(daysOfWeekArray); //array to list
@@ -184,30 +145,31 @@ public class AppointmentService {
         }
         return appointmentIsPosible;
     }
-    /*public boolean temporalWindow(LocalDate dateOfAppointment) {
-        LocalDate date = LocalDate.now();
-        LocalDate startingDate = LocalDate.now();
-        LocalDate endingDate;
-        boolean appointmentIsPosible = true;
-        int i = 0;
 
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
+    public TreeSet<DoctorOutputnumberOfAppointments> getMostbussydoctors(){
+        List<Doctor> doctors = doctorRepository.findAll();
 
-        DayOfWeek[] daysOfWeekArray = DayOfWeek.values(); //array with days of week
-        List<DayOfWeek> daysOfWeek = Arrays.asList(daysOfWeekArray); //array to list
+        TreeSet<DoctorOutputnumberOfAppointments> doctorsOutput = new TreeSet<>(Comparator.comparingLong(DoctorOutputnumberOfAppointments::getNumberOfAppointments).reversed());
 
-        for (DayOfWeek day : daysOfWeek) { //Iterate through the list of the days of the week
-            if (date.getDayOfWeek() == day) { //know day of the week when asking for appointment
-                startingDate = date.plusDays(7 - i); //set starting date for next Monday
-                endingDate = startingDate.plusDays(4);
-                if (dateOfAppointment.isBefore(startingDate) || dateOfAppointment.isAfter(endingDate)) {
-                    appointmentIsPosible = false;
-                    break;
-                }
+        LocalDate[] dates = temporalWindowArray();
+        LocalDate firstDay = dates[0];
+        long appointmentCounter = 0;
+
+        for(Doctor doctor: doctors){ //al doctors
+            appointmentCounter = 0; //set counter to 0
+            List<Appointment> appointments = appointmentRepository.findByCollegeNumber(doctor.getCollegeNumber());
+            //appointments of doctor (by college number)
+            for(Appointment appointment: appointments){
+                if(appointment.getDateOfAppointment().isAfter(firstDay.minusDays(1))){ //if appointment is on the week of temporal window
+                    appointmentCounter = appointmentCounter + 1;} //add +1 to counter
+                //doctor.setNumberOfAppointments(appointmentCounter); //set number of appointments with counter
             }
-            i++;
-            System.out.println();
         }
-        return appointmentIsPosible;
-    }*/
+
+        for(Doctor doctor: doctors){ //convert doctor to doctorOutput
+            doctorsOutput.add(DoctorOutputnumberOfAppointments.getDoctor(doctor, appointmentCounter));
+        }
+        return doctorsOutput;
+    }
+
 }

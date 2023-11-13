@@ -22,13 +22,17 @@ public class Doctor extends HealthStaff {
     @Max(value = 100, message = "Maximum years experience is 100")
     private byte yearsExperience;
 
+    private long numberOfAppointments;
+
     public Doctor(String id, String collegeNumber, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
         super(id, collegeNumber, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
+        this.numberOfAppointments = 0;
     }
 
     public Doctor(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
         super(id, collegeNumber, name, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
+        this.numberOfAppointments = 0;
     }
 }

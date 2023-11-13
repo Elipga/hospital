@@ -2,6 +2,7 @@ package com.example.hospital.Controller;
 
 import com.example.hospital.Controller.DTO.AppointmentInput;
 import com.example.hospital.Controller.DTO.AppointmentOutput;
+import com.example.hospital.Controller.DTO.DoctorOutputnumberOfAppointments;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.TreeSet;
 
 @RestController
 public class AppointmentController {
@@ -86,5 +87,11 @@ public class AppointmentController {
         } catch (DoctorDoesNotExists e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("doctors/appointments")
+    public ResponseEntity<TreeSet<DoctorOutputnumberOfAppointments>> getMostBussyDoctors(){
+        TreeSet<DoctorOutputnumberOfAppointments> doctors = appointmentService.getMostbussydoctors();
+        return ResponseEntity.ok(doctors);
     }
 }

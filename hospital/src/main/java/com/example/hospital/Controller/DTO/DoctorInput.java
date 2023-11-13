@@ -3,6 +3,7 @@ package com.example.hospital.Controller.DTO;
 import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Domain.HealthStaff;
 import com.example.hospital.Exception.InvalidException;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,6 +46,7 @@ public class DoctorInput {
         if(!id.matches("[0-9]{8}[A-Za-z]"))throw new InvalidException("ID must contain 8 numbers" +
                 "and 1 letter");
         this.id = id;
+        if((collegeNumber.length() != 9)) throw new InvalidException("College number has 9 chars");
         this.collegeNumber = collegeNumber;
         this.name = name;
         this.yearsExperience = yearsExperience;

@@ -11,10 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) //Each class in the inheritance hierarchy has its own table in the database
 @Getter
 @Setter
-@Table(name = "health_staff")
 @NoArgsConstructor
 public class HealthStaff {
     @NotNull(message = "ID is null")
@@ -40,6 +39,7 @@ public class HealthStaff {
     public HealthStaff(String id, String collegeNumber, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
         validateId(id);
         this.id = id;
+        validateCNumber(collegeNumber);
         this.collegeNumber = collegeNumber;
         this.startingTime = startingTime;
         this.endingTime = endingTime;
@@ -48,15 +48,25 @@ public class HealthStaff {
     public HealthStaff(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
         validateId(id);
         this.id = id;
+        validateCNumber(collegeNumber);
         this.collegeNumber = collegeNumber;
         this.name = name;
+        validateStartingTime(startingTime);
         this.startingTime = startingTime;
         this.endingTime = endingTime;
     }
 
-    private static void validateId(String id) throws InvalidException {
+    private void validateId(String id) throws InvalidException {
         if((id.length() != 9)) throw new InvalidException("Id has 9 chars");
         if(!id.matches("[0-9]{8}[A-Za-z]"))throw new InvalidException("ID must contain 8 numbers" +
                 "and 1 letter");
+    }
+
+    private void validateCNumber(String collegeNumber) throws InvalidException {
+        if((collegeNumber.length() != 9)) throw new InvalidException("College number has 9 chars");
+    }
+
+    private void validateStartingTime(LocalTime startingTime) throws InvalidException {
+        if(startingTime.getMinute() != 00) throw new InvalidException("Time has to be at minute 00");
     }
 }
