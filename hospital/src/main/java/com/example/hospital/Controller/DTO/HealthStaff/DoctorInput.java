@@ -26,8 +26,7 @@ public class DoctorInput {
     private String name;
     @Min(value = 0, message = "Minimum years experience is 0")
     @Max(value = 100, message = "Maximum years experience is 100")
-    @Pattern(regexp="^[0-9]+$")
-    private byte yearsExperience;
+    private int yearsExperience;
     @NotNull(message = "Starting time is null")
     @Schema(type = "String", pattern = "HH:mm:SS")
     private LocalTime startingTime;
@@ -35,13 +34,14 @@ public class DoctorInput {
     @Schema(type = "String", pattern = "HH:mm:SS")
     private LocalTime endingTime;
 
-    public DoctorInput(String dni, String collegeNumber, String name, byte yearsExperience, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
+    public DoctorInput(String dni, String collegeNumber, String name, int yearsExperience, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
         Validation validation = new Validation();
         validation.validateDni(dni);
         this.dni = dni;
         validation.validateCNumber(collegeNumber);
         this.collegeNumber = collegeNumber;
         this.name = name;
+        validation.validateYearsExperience(yearsExperience);
         this.yearsExperience = yearsExperience;
         validation.validateTime(startingTime);
         this.startingTime = startingTime;
@@ -53,5 +53,4 @@ public class DoctorInput {
         return new Doctor(doctorInput.getDni(),doctorInput.getCollegeNumber(), doctorInput.getName(),
                 doctorInput.getStartingTime(), doctorInput.getEndingTime(), doctorInput.getYearsExperience());
     }
-
 }

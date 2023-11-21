@@ -23,7 +23,7 @@ public class Appointment {
     @Id
     private String patientDni;
     @Id
-    @Future
+    @Future(message = "Must be a future date")
     private LocalDate dateOfAppointment;
     @Id
     private LocalTime timeOfAppointment;

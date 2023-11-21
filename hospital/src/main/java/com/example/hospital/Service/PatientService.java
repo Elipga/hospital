@@ -19,7 +19,7 @@ public class PatientService {
     @Autowired
     PatientRepository patientRepository;
 
-    public List<PatientOutput> getAllPatients() throws IsEmptyException {
+    public List<PatientOutput> getAllPatients() throws IsEmptyException, InvalidException {
         List<Patient> patients = patientRepository.findAll();
         List<PatientOutput> patientsOutput = new ArrayList<>();
         if(patients.isEmpty()) throw new IsEmptyException("List of patients is empty");

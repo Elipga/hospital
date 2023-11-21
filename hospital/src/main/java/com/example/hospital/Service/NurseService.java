@@ -24,7 +24,7 @@ public class NurseService {
     @Autowired
     DoctorRepository doctorRepository;
 
-    public List<NurseOutput> getAllNurses() throws IsEmptyException {
+    public List<NurseOutput> getAllNurses() throws IsEmptyException, InvalidException {
         List<Nurse> nurses = nurseRepository.findAll();
         List<NurseOutput> nursesOutput = new ArrayList<>();
         if(nurses.isEmpty()) throw new IsEmptyException("List of nurses is empty");
@@ -49,10 +49,11 @@ public class NurseService {
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, NurseDoesNotExists, InvalidException {
-        if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
-            throw new StaffDoesNotExists("Health staff does not exist");
-        if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws NurseDoesNotExists, InvalidException {
+        //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
+          //  throw new StaffDoesNotExists("Health staff does not exist");
+        //if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");
+        if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse doesn´t exist");
         Optional<Nurse> nurse = nurseRepository.findById(collegeNumber);
         Nurse nurseSet = nurse.get();
         nurseSet.setStartingTime(healthStaffUpdate.getStartingTime());
@@ -60,11 +61,4 @@ public class NurseService {
         nurseRepository.save(nurseSet);
         return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
     }
-
-    public boolean isDoctorOrNurse(String collegeNumber){
-        if(doctorRepository.existsById(collegeNumber))
-            return true;
-        else return false;
-    }
-
 }

@@ -3,6 +3,7 @@ package com.example.hospital.Controller.DTO;
 import com.example.hospital.Exception.InvalidException;
 
 import java.time.LocalTime;
+import java.util.regex.Pattern;
 
 public class Validation {
 
@@ -13,8 +14,6 @@ public class Validation {
     }
 
     public void validateCNumber(String collegeNumber) throws InvalidException {
-        if(!collegeNumber.matches("^[0-9]{9}$")) throw new InvalidException("College number" +
-                "is compound just by numbers");
         if((collegeNumber.length() != 9)) throw new InvalidException("College number has 9 chars");
     }
 
@@ -29,5 +28,11 @@ public class Validation {
                 "before ending time");
         if(startingTime.equals(endingTime)) throw new InvalidException("Starting time and ending time" +
                 "can not be the same");
+    }
+
+    public void validateYearsExperience(int yearsOfExperience) throws InvalidException {
+        String stringYears = String.valueOf(yearsOfExperience);
+        if(!stringYears.matches("^[0-9]+$")) throw new InvalidException("Years of experience must be" +
+                "a number");
     }
 }

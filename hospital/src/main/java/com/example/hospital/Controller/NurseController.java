@@ -20,55 +20,23 @@ import java.util.List;
 public class NurseController {
     @Autowired
     NurseService nurseService;
-    @Operation(summary = "Add nurse", responses = {
-            @ApiResponse(responseCode = "201", description = "Nurse created"),
-            @ApiResponse(responseCode = "208", description = "Nurse already exists"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Add nurse")
     @PostMapping("/nurses")
-    public ResponseEntity<String> addNurse(@Valid @RequestBody NurseInput nurseInput){
-        try {
+    public ResponseEntity<String> addNurse(@Valid @RequestBody NurseInput nurseInput) throws AlreadyExistsException, InvalidException {
             nurseService.addNurse(nurseInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(e.getMessage());
-        } catch (InvalidException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
-        }
     }
-    @Operation(summary = "Get nurses", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Content not found") }
-    )
+    @Operation(summary = "Get nurses")
     @GetMapping("/nurses")
-    public ResponseEntity<List<NurseOutput>> getAllNurses(){
-        try {
+    public ResponseEntity<List<NurseOutput>> getAllNurses() throws IsEmptyException, InvalidException {
             List<NurseOutput> nurses = nurseService.getAllNurses();
             return ResponseEntity.ok(nurses);
-        } catch (IsEmptyException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
-    @Operation(summary = "Set timetable of nurse", description = "Update Starting and Ending time", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Health Staff not found") }
-    )
+    @Operation(summary = "Set timetable of nurse", description = "Update Starting and Ending time")
     @PutMapping("/nurses/{collegeNumber}")
     public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfNurse(@PathVariable String collegeNumber,
-                                                                                    @RequestBody HealthStaffUpdate healthStaffUpdate) {
-        try {
+                                                                                    @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, NurseDoesNotExists {
             HealthStaffOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(nurse);
-        } catch (StaffDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NurseDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        }
     }
 }

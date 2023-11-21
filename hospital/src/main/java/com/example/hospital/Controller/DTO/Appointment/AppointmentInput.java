@@ -24,7 +24,7 @@ public class AppointmentInput {
     @NotNull(message = "Patient DNI is null")
     @NotEmpty(message = "Patient DNI is null")
     private String patientDni;
-    @Future
+    @Future(message = "Must be a future date")
     private LocalDate dateOfAppointment;
     @Schema(type = "String", pattern = "HH:mm:SS")
     private LocalTime timeOfAppointment;

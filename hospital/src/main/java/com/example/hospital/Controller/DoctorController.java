@@ -20,85 +20,37 @@ import java.util.List;
 public class DoctorController {
     @Autowired
     DoctorService doctorService;
-    @Operation(summary = "Add doctor", responses = {
-            @ApiResponse(responseCode = "201", description = "Doctor created"),
-            @ApiResponse(responseCode = "208", description = "Health staff already reported"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Add doctor")
     @PostMapping("/doctors")
-    public ResponseEntity<String> addDoctor(@Valid @RequestBody DoctorInput doctorInput) {
-        try {
+    public ResponseEntity<String> addDoctor(@Valid @RequestBody DoctorInput doctorInput) throws AlreadyExistsException, InvalidException {
             doctorService.addDoctor(doctorInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(e.getMessage());
-        } catch (InvalidException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
-        }
     }
-    @Operation(summary = "Get all doctors", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Content not found")}
-    )
+    @Operation(summary = "Get all doctors")
     @GetMapping("/doctors")
-    public ResponseEntity<List<DoctorOutput>> getAllDoctors() {
-        try {
+    public ResponseEntity<List<DoctorOutput>> getAllDoctors() throws IsEmptyException, InvalidException {
             List<DoctorOutput> doctors = doctorService.getAllDoctors();
             return ResponseEntity.ok(doctors);
-        } catch (IsEmptyException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
-    @Operation(summary = "Get doctor by college number", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Doctor not found")}
-    )
+    @Operation(summary = "Get doctor by college number")
     @GetMapping("/doctors/{collegeNumber}")
-    public ResponseEntity<DoctorOutput> getDoctorById(@PathVariable String collegeNumber){
-        try {
+    public ResponseEntity<DoctorOutput> getDoctorById(@PathVariable String collegeNumber) throws InvalidException, DoctorDoesNotExists {
             DoctorOutput doctorOutput = doctorService.getDoctorById(collegeNumber);
             return ResponseEntity.ok(doctorOutput);
-        } catch (DoctorDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
 
-    @Operation(summary = "Set timetable of doctor", description = "Update Starting and Ending time", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Health Staff not found") }
-    )
+    @Operation(summary = "Set timetable of doctor", description = "Update Starting and Ending time")
     @PutMapping("/doctors/{collegeNumber}")
     public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfDoctor(@PathVariable String collegeNumber,
-                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) {
-        try {
+                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, DoctorDoesNotExists {
             HealthStaffOutputCNumberAndTimetable doctor = doctorService.setTimeTableOfDoctor(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(doctor);
-        } catch (StaffDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (DoctorDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        }
     }
 
-    @Operation(summary = "Delete doctor", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Doctor not found") }
-    )
+    @Operation(summary = "Delete doctor")
     @DeleteMapping("/doctors/{collegeNumber}")
-    public ResponseEntity<String> deleteDoctor(@PathVariable String collegeNumber){
-        try {
+    public ResponseEntity<String> deleteDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists {
             doctorService.deleteDoctor(collegeNumber);
             return ResponseEntity.ok().build();
-        } catch (DoctorDoesNotExists e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
-
 }

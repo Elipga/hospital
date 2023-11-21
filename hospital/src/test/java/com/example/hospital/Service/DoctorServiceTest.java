@@ -47,9 +47,9 @@ class DoctorServiceTest {
         LocalTime endingTime = LocalTime.parse(endString);
 
         List<Doctor> doctors = new ArrayList<Doctor>();
-        Doctor doctor1 = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, (byte)1);
-        Doctor doctor2 = new Doctor("12345678B", "223456789", "Elisa", startingTime, endingTime, (byte)1);
-        Doctor doctor3 = new Doctor("12345678C", "323456789", "Elisa", startingTime, endingTime, (byte)1);
+        Doctor doctor1 = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, 1);
+        Doctor doctor2 = new Doctor("12345678B", "223456789", "Elisa", startingTime, endingTime, 1);
+        Doctor doctor3 = new Doctor("12345678C", "323456789", "Elisa", startingTime, endingTime, 1);
         doctors.add(doctor1);
         doctors.add(doctor2);
         doctors.add(doctor3);
@@ -58,8 +58,6 @@ class DoctorServiceTest {
         List<DoctorOutput> doctorOutputs = doctorService.getAllDoctors();
         Assertions.assertEquals(3, doctorOutputs.size());
     }
-
-
     @Test
     void getDoctorById() throws InvalidException, DoctorDoesNotExists {
         String startString = "15:30:00";
@@ -67,13 +65,13 @@ class DoctorServiceTest {
 
         LocalTime startingTime = LocalTime.parse(startString);
         LocalTime endingTime = LocalTime.parse(endString);
-        Doctor doctor = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, (byte)1);
+        Doctor doctor = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, 1);
         DoctorOutput doctorOutput = new DoctorOutput("12345678A", "123456789", "Elisa",startingTime, endingTime);
 
         when(doctorRepository.existsById(doctor.getCollegeNumber())).thenReturn(true);
         when(doctorRepository.findById(doctor.getCollegeNumber())).thenReturn(Optional.of(doctor));
         DoctorOutput result = doctorService.getDoctorById(doctor.getCollegeNumber());
         Assertions.assertEquals(doctorOutput.getName(), result.getName()); // doctorOutput.toString, result.toString
-        //propiedad a propiedad
+        //propiedad a propiedad, ya que no se pueden comparar los objetos en sí porque cada uno apunta a una dirección de memoria
     }
 }

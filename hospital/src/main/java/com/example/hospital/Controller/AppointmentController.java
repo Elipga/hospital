@@ -22,156 +22,56 @@ import java.util.TreeMap;
 public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
-
-
-    @Operation(summary = "Add appointment", responses = {
-            @ApiResponse(responseCode = "201", description = "Appointment created"),
-            @ApiResponse(responseCode = "208", description = "Already reported"),
-            @ApiResponse(responseCode = "404", description = "Not found"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed"),
-            @ApiResponse(responseCode = "416", description = "Invalid time or date")}
-    )
+    @Operation(summary = "Add appointment")
     @PostMapping("/appointments")
-    public ResponseEntity<String> addAppointment(@Valid @RequestBody AppointmentInput appointmentInput){
-        try {
+    public ResponseEntity<String> addAppointment(@Valid @RequestBody AppointmentInput appointmentInput) throws PatientDoesNotExists, AlreadyExistsException, InvalidException, DateOutOfRange, StaffDoesNotExists, TimeOutOfRangeException {
             appointmentService.addAppointment(appointmentInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (StaffDoesNotExists e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (TimeOutOfRangeException e) {
-            return ResponseEntity.status(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE).body(e.getMessage());
-        } catch (PatientDoesNotExists e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(e.getMessage());
-        } catch (DateOutOfRange e) {
-            return ResponseEntity.status(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE).body(e.getMessage());
-        } catch (InvalidException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
-        }
     }
-
-    @Operation(summary = "Get all appointments", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "204", description = "No content"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Get all appointments")
     @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentOutput>> getAllAppointments(){
-        try {
+    public ResponseEntity<List<AppointmentOutput>> getAllAppointments() throws IsEmptyException, InvalidException {
             List<AppointmentOutput> appointmentsOutput = appointmentService.getAllAppointments();
             return ResponseEntity.ok(appointmentsOutput);
-        } catch (IsEmptyException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        }
     }
-
-    @Operation(summary = "Get appointments of patient", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "204", description = "No content"),
-            @ApiResponse(responseCode = "404", description = "Not found"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Get appointments of patient")
     @GetMapping("/patients/{patientDni}/appointments")
     public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfPatient
-            (@PathVariable String patientDni, @RequestParam (name = "dateOfAppointment") String dateOfAppointment){
-        try {
+            (@PathVariable String patientDni, @RequestParam (name = "dateOfAppointment") String dateOfAppointment) throws PatientDoesNotExists, IsEmptyException, InvalidException {
             List<AppointmentOutput> appointmentsOutput = appointmentService.getAppointmentsOfPatient(patientDni,dateOfAppointment);
             return ResponseEntity.ok(appointmentsOutput);
-        } catch (PatientDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IsEmptyException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-
-        }
     }
-    @Operation(summary = "Get appointments of doctor of next temporal window", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Not found"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Get appointments of doctor of next temporal window")
     @GetMapping("doctors/{collegeNumber}/appointments")
     public ResponseEntity<TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>>> getAppointmentsOfDoctorAndWeek(
-            @PathVariable String collegeNumber){
-        try {
-            TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> appointmentsOutput = appointmentService.getAppointmentsOfDoctorAndWeek(collegeNumber);
+            @PathVariable String collegeNumber) throws InvalidException, StaffDoesNotExists, DoctorDoesNotExists {
+            TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> appointmentsOutput =
+                    appointmentService.getAppointmentsOfDoctorAndWeek(collegeNumber);
             return ResponseEntity.ok(appointmentsOutput);
-        } catch (StaffDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (DoctorDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        }
     }
-
-    @Operation(summary = "Get busiest doctors for next temporal window", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Get busiest doctors for next temporal window")
     @GetMapping("doctors/busy")
-    public ResponseEntity<TreeMap<String, Integer>> getBusiestDoctors(){
+    public ResponseEntity<TreeMap<String, Integer>> getBusiestDoctors() throws InvalidException {
         TreeMap<String, Integer> doctors = null;
-        try {
             doctors = appointmentService.getBusiestDoctors();
             return ResponseEntity.ok(doctors);
-        } catch (InvalidException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
-        }
-
     }
-    @Operation(summary = "Get availability of doctor for next temporal window", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Not found")}
-    )
+    @Operation(summary = "Get availability of doctor for next temporal window")
     @GetMapping("/doctors/{collegeNumber}/availabilities")
-    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber){
+    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
-        try {
             if(!appointmentService.isDoctorOrNurse(collegeNumber)) throw new DoctorDoesNotExists("Doctor" +
                     "doesn´t exist");
             availabilityOutputs = appointmentService.getAvailabilityOfStaff(collegeNumber);
             return ResponseEntity.ok(availabilityOutputs);
-        } catch (DoctorDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (StaffDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
-
-    @Operation(summary = "Get availability of nurse for next temporal window", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Not found")}
-    )
+    @Operation(summary = "Get availability of nurse for next temporal window")
     @GetMapping("/nurses/{collegeNumber}/availabilities")
-    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfNurse(@PathVariable String collegeNumber){
+    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfNurse(@PathVariable String collegeNumber) throws NurseDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
-        try {
             if(appointmentService.isDoctorOrNurse(collegeNumber)) throw new NurseDoesNotExists("Nurse" +
                     "doesn´t exist");
             availabilityOutputs = appointmentService.getAvailabilityOfStaff(collegeNumber);
             return ResponseEntity.ok(availabilityOutputs);
-        } catch (StaffDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NurseDoesNotExists e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
 }

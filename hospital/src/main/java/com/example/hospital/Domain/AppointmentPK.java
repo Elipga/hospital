@@ -18,7 +18,7 @@ import java.time.LocalTime;
 public class AppointmentPK implements Serializable {
     private String collegeNumber;
     private String patientDni;
-    @Future
+    @Future(message = "Must be a future date")
     private LocalDate dateOfAppointment;
     private LocalTime timeOfAppointment;
     public AppointmentPK(String collegeNumber, String patientDni, LocalDate dateOfAppointment, LocalTime timeOfAppointment) throws InvalidException {

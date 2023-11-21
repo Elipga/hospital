@@ -23,34 +23,16 @@ import java.util.List;
 public class PatientController {
     @Autowired
     PatientService patientService;
-    @Operation(summary = "Add patient", responses = {
-            @ApiResponse(responseCode = "201", description = "Patient created"),
-            @ApiResponse(responseCode = "208", description = "Already reported"),
-            @ApiResponse(responseCode = "412", description = "Precondition failed")}
-    )
+    @Operation(summary = "Add patient")
     @PostMapping("/patients")
-    public ResponseEntity<String> addPatient(@Valid @RequestBody PatientInput patientInput){
-        try {
+    public ResponseEntity<String> addPatient(@Valid @RequestBody PatientInput patientInput) throws AlreadyExistsException, InvalidException {
             patientService.addPatient(patientInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(e.getMessage());
-        } catch (InvalidException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
-        }
     }
-    @Operation(summary = "Get patients", responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Patient not found") }
-    )
+    @Operation(summary = "Get patients")
     @GetMapping("/patients")
-    public ResponseEntity<List<PatientOutput>> getAllPatients(){
-        try {
+    public ResponseEntity<List<PatientOutput>> getAllPatients() throws IsEmptyException, InvalidException {
             List<PatientOutput> patients = patientService.getAllPatients();
             return ResponseEntity.ok(patients);
-        } catch (IsEmptyException e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
 }

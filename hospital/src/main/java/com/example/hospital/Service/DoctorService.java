@@ -28,7 +28,7 @@ public class DoctorService {
         this.doctorRepository = doctorRepository;
     }
 
-    public List<DoctorOutput> getAllDoctors() throws IsEmptyException {
+    public List<DoctorOutput> getAllDoctors() throws IsEmptyException, InvalidException {
         List<Doctor> doctors = doctorRepository.findAll();
         List<DoctorOutput> doctorsOutput = new ArrayList<>();
         if (doctors.isEmpty()) throw new IsEmptyException("List of doctors is empty");
@@ -54,10 +54,11 @@ public class DoctorService {
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, DoctorDoesNotExists, InvalidException {
-        if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
-            throw new StaffDoesNotExists("Health staff does not exist");
-        if (isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws DoctorDoesNotExists, InvalidException {
+        //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
+          //  throw new StaffDoesNotExists("Health staff does not exist");
+        //if (isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
         Doctor doctorSet = doctor.get();
         doctorSet.setStartingTime(healthStaffUpdate.getStartingTime());
@@ -66,7 +67,7 @@ public class DoctorService {
         return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
     }
 
-    public DoctorOutput getDoctorById(String collegeNumber) throws DoctorDoesNotExists {
+    public DoctorOutput getDoctorById(String collegeNumber) throws DoctorDoesNotExists, InvalidException {
         if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         else {
             Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);

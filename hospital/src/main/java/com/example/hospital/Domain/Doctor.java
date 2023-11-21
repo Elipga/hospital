@@ -20,13 +20,12 @@ import java.time.LocalTime;
 public class Doctor extends HealthStaff {
     @Min(value = 0, message = "Minimum years experience is 0")
     @Max(value = 100, message = "Maximum years experience is 100")
-    @Pattern(regexp="^[0-9]+$")
-    private byte yearsExperience;
-    public Doctor(String dni, String collegeNumber, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
+    private int yearsExperience;
+    public Doctor(String dni, String collegeNumber, LocalTime startingTime, LocalTime endingTime, int yearsExperience) throws InvalidException {
         super(dni, collegeNumber, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
     }
-    public Doctor(String dni, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
+    public Doctor(String dni, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime, int yearsExperience) throws InvalidException {
         super(dni, collegeNumber, name, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
     }

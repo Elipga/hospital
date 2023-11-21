@@ -4,5 +4,5 @@ CREATE TABLE doctors(
     name varchar(50),
     starting_time time not null,
     ending_time time not null,
-    years_experience tinyint
+    years_experience int
     );
