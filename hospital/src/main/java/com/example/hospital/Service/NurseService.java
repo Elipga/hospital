@@ -1,7 +1,9 @@
 package com.example.hospital.Service;
 
-import com.example.hospital.Controller.DTO.*;
-import com.example.hospital.Domain.Doctor;
+import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffOutputCNumberAndTimetable;
+import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
+import com.example.hospital.Controller.DTO.HealthStaff.NurseInput;
+import com.example.hospital.Controller.DTO.HealthStaff.NurseOutput;
 import com.example.hospital.Domain.Nurse;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.DoctorRepository;
@@ -37,17 +39,17 @@ public class NurseService {
         Nurse newNurse = NurseInput.getNurse(nurseInput);
         if(doctorRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Doctor already exists");
-        if(doctorRepository.existsById(nurseInput.getId())) throw new AlreadyExistsException
+        if(doctorRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
                 ("Doctor already exists");
         if(nurseRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Nurse already exists");
-        if(nurseRepository.existsById(nurseInput.getId())) throw new AlreadyExistsException
+        if(nurseRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
                 ("Nurse already exists");
         else {nurseRepository.save(newNurse);
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, NurseDoesNotExists {
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, NurseDoesNotExists, InvalidException {
         if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
             throw new StaffDoesNotExists("Health staff does not exist");
         if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");

@@ -16,12 +16,10 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 public class Nurse extends HealthStaff{
-
-    public Nurse(String id, String collegeNumber, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
-        super(id, collegeNumber, startingTime, endingTime);
+    public Nurse(String dni, String collegeNumber, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
+        super(dni, collegeNumber, startingTime, endingTime);
     }
-
-    public Nurse(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
-        super(id, collegeNumber, name, startingTime, endingTime);
+    public Nurse(String dni, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
+        super(dni, collegeNumber, name, startingTime, endingTime);
     }
 }

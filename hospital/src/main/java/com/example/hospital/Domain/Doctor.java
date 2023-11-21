@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.time.LocalTime;
 
 @Entity
@@ -17,22 +18,16 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 public class Doctor extends HealthStaff {
-
     @Min(value = 0, message = "Minimum years experience is 0")
     @Max(value = 100, message = "Maximum years experience is 100")
+    @Pattern(regexp="^[0-9]+$")
     private byte yearsExperience;
-
-    private long numberOfAppointments;
-
-    public Doctor(String id, String collegeNumber, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
-        super(id, collegeNumber, startingTime, endingTime);
+    public Doctor(String dni, String collegeNumber, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
+        super(dni, collegeNumber, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
-        this.numberOfAppointments = 0;
     }
-
-    public Doctor(String id, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
-        super(id, collegeNumber, name, startingTime, endingTime);
+    public Doctor(String dni, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime, byte yearsExperience) throws InvalidException {
+        super(dni, collegeNumber, name, startingTime, endingTime);
         this.yearsExperience = yearsExperience;
-        this.numberOfAppointments = 0;
     }
 }

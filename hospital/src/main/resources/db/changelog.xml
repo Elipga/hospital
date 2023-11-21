@@ -25,12 +25,5 @@
         <sqlFile path="scripts/05_create_table_appointments.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
     </changeSet>
 
-    <changeSet id="6" author="elisa">
-        <sqlFile path="scripts/06_create_table_availabilities.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
-    </changeSet>
-
-    <changeSet id="7" author="elisa">
-        <sqlFile path="scripts/07_add_column_number_of_appointments.sql" relativeToChangelogFile="true" splitStatements="true" encoding="UTF-8"/>
-    </changeSet>
 
 </databaseChangeLog>

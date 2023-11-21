@@ -1,7 +1,7 @@
 package com.example.hospital.Service;
 
-import com.example.hospital.Controller.DTO.PatientInput;
-import com.example.hospital.Controller.DTO.PatientOutput;
+import com.example.hospital.Controller.DTO.Patient.PatientInput;
+import com.example.hospital.Controller.DTO.Patient.PatientOutput;
 import com.example.hospital.Domain.Patient;
 import com.example.hospital.Exception.AlreadyExistsException;
 import com.example.hospital.Exception.InvalidException;
@@ -32,7 +32,7 @@ public class PatientService {
 
     public void addPatient(PatientInput patientInput) throws AlreadyExistsException, InvalidException {
         Patient newPatient = PatientInput.getPatient(patientInput);
-        if(patientRepository.existsById(patientInput.getId())) throw new AlreadyExistsException
+        if(patientRepository.existsById(patientInput.getDni())) throw new AlreadyExistsException
                 ("Patient already exists");
         else patientRepository.save(newPatient);
     }

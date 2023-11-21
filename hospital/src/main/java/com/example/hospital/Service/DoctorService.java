@@ -1,6 +1,9 @@
 package com.example.hospital.Service;
 
-import com.example.hospital.Controller.DTO.*;
+import com.example.hospital.Controller.DTO.HealthStaff.DoctorInput;
+import com.example.hospital.Controller.DTO.HealthStaff.DoctorOutput;
+import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffOutputCNumberAndTimetable;
+import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
 import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.DoctorRepository;
@@ -8,6 +11,7 @@ import com.example.hospital.Repository.NurseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +24,16 @@ public class DoctorService {
     @Autowired
     NurseRepository nurseRepository;
 
+    public DoctorService(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
+
     public List<DoctorOutput> getAllDoctors() throws IsEmptyException {
         List<Doctor> doctors = doctorRepository.findAll();
         List<DoctorOutput> doctorsOutput = new ArrayList<>();
-        if(doctors.isEmpty()) throw new IsEmptyException("List of doctors is empty");
+        if (doctors.isEmpty()) throw new IsEmptyException("List of doctors is empty");
 
-        for(Doctor doctor: doctors){
+        for (Doctor doctor : doctors) {
             doctorsOutput.add(DoctorOutput.getDoctor(doctor));
         }
         return doctorsOutput;
@@ -33,22 +41,23 @@ public class DoctorService {
 
     public void addDoctor(DoctorInput doctorInput) throws AlreadyExistsException, InvalidException {
         Doctor newDoctor = DoctorInput.getDoctor(doctorInput);
-        if(doctorRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
+        if (doctorRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Doctor already exists");
-        if(doctorRepository.existsById(doctorInput.getId())) throw new AlreadyExistsException
+        if (doctorRepository.existsByDni(doctorInput.getDni())) throw new AlreadyExistsException
                 ("Doctor already exists");
-        if(nurseRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
+        if (nurseRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Nurse already exists");
-        if(nurseRepository.existsById(doctorInput.getId())) throw new AlreadyExistsException
+        if (nurseRepository.existsByDni(doctorInput.getDni())) throw new AlreadyExistsException
                 ("Nurse already exists");
-        else {doctorRepository.save(newDoctor);
+        else {
+            doctorRepository.save(newDoctor);
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, DoctorDoesNotExists {
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws StaffDoesNotExists, DoctorDoesNotExists, InvalidException {
         if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
             throw new StaffDoesNotExists("Health staff does not exist");
-        if(isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        if (isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
         Doctor doctorSet = doctor.get();
         doctorSet.setStartingTime(healthStaffUpdate.getStartingTime());
@@ -57,9 +66,29 @@ public class DoctorService {
         return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
     }
 
-    public boolean isDoctorOrNurse(String collegeNumber){
-        if(doctorRepository.existsById(collegeNumber))
+    public DoctorOutput getDoctorById(String collegeNumber) throws DoctorDoesNotExists {
+        if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        else {
+            Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
+            DoctorOutput doctorOutput = DoctorOutput.getDoctor(doctor.get());
+            return doctorOutput;
+        }
+    }
+
+    public void deleteDoctor(String collegeNumber) throws DoctorDoesNotExists {
+        if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        else {
+            Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
+            doctorRepository.delete(doctor.get());
+        }
+    }
+
+
+    public boolean isDoctorOrNurse(String collegeNumber) {
+        if (doctorRepository.existsById(collegeNumber))
             return true;
         else return false;
     }
+
+
 }

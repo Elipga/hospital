@@ -1,10 +1,7 @@
 package com.example.hospital.Repository;
 
 import com.example.hospital.Domain.Appointment;
-import jdk.internal.net.http.common.Pair;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -16,10 +13,13 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, String> {
     boolean existsByCollegeNumberAndDateOfAppointmentAndTimeOfAppointment
             (String collegeNumber, LocalDate dateOfAppointment,LocalTime timeOfAppointment);
-    List<Appointment> findByPatientIdAndDateOfAppointmentOrderByTimeOfAppointment (String patienId,
+    List<Appointment> findByPatientDniAndDateOfAppointmentOrderByTimeOfAppointment (String patientId,
                                                                                    LocalDate dateOfAppointment);
     List<Appointment> findByCollegeNumberAndDateOfAppointmentBetween(String collegeNumber,
                                                                      LocalDate firstDay, LocalDate lastDay);
     List<Appointment> findByCollegeNumber(String collegeNumber);
+
+    boolean existsByPatientDniAndDateOfAppointmentAndTimeOfAppointment(String patientId, LocalDate dateOfAppointment,
+                                                                      LocalTime timeOfAppointment );
 
 }

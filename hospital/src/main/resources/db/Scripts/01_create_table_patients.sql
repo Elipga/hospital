@@ -1,5 +1,5 @@
 CREATE TABLE patients(
-    id char(9) primary key,
+    dni char(9) primary key,
     name varchar(50),
-    adress varchar(100)
+    address varchar(100)
     );
