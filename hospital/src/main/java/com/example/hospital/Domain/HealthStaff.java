@@ -16,7 +16,6 @@ import java.time.LocalTime;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) //Each class in the inheritance hierarchy has its own table in the database
 @Getter
-@Setter
 @NoArgsConstructor
 public class HealthStaff {
     @NotNull(message = "DNI is null")
@@ -44,7 +43,6 @@ public class HealthStaff {
         validation.validateTime(endingTime);
         this.endingTime = endingTime;
         validation.validateTime(startingTime,endingTime);
-
     }
     public HealthStaff(String dni, String collegeNumber, String name, LocalTime startingTime, LocalTime endingTime) throws InvalidException {
         Validation validation = new Validation();
@@ -58,6 +56,13 @@ public class HealthStaff {
         validation.validateTime(endingTime);
         this.endingTime = endingTime;
         validation.validateTime(startingTime,endingTime);
+    }
 
+    public void setStartingTime(LocalTime startingTime) {
+        this.startingTime = startingTime;
+    }
+
+    public void setEndingTime(LocalTime endingTime) {
+        this.endingTime = endingTime;
     }
 }

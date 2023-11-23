@@ -4,7 +4,6 @@ import com.example.hospital.Controller.DTO.Validation;
 import com.example.hospital.Exception.InvalidException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,7 +14,6 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "patients")
 @NoArgsConstructor
 public class Patient {
@@ -30,6 +28,7 @@ public class Patient {
 
     private String address;
     public Patient(String dni) {
+
         this.dni = dni;
     }
     public Patient(String dni, String name, String address) throws InvalidException {

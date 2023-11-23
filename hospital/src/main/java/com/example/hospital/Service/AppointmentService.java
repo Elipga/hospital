@@ -5,7 +5,6 @@ import com.example.hospital.Controller.DTO.Appointment.AppointmentInput;
 import com.example.hospital.Controller.DTO.Appointment.AppointmentOutput;
 import com.example.hospital.Controller.DTO.Appointment.AppointmentOutputHourAndAndPatient;
 import com.example.hospital.Domain.Appointment;
-import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Domain.HealthStaff;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.*;
