@@ -14,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.TreeMap;
 
 @RestController
 public class DoctorController {
@@ -52,5 +55,21 @@ public class DoctorController {
     public ResponseEntity<String> deleteDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists {
             doctorService.deleteDoctor(collegeNumber);
             return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Get availability of doctor for next temporal window")
+    @GetMapping("/doctors/{collegeNumber}/availabilities")
+    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
+        availabilityOutputs = doctorService.getAvailabilityOfDoctor(collegeNumber);
+        return ResponseEntity.ok(availabilityOutputs);
+    }
+
+    @Operation(summary = "Get busiest doctors for next temporal window")
+    @GetMapping("doctors/busy")
+    public ResponseEntity<TreeMap<String, Integer>> getBusiestDoctors() throws InvalidException {
+        TreeMap<String, Integer> doctors = null;
+        doctors = doctorService.getBusiestDoctors();
+        return ResponseEntity.ok(doctors);
     }
 }

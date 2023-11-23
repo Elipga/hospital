@@ -4,39 +4,51 @@ import com.example.hospital.Controller.DTO.ErrorDTO;
 import com.example.hospital.Exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestControllerAdvice //Message error with validation dependency
+@RestControllerAdvice
 public class GlobalControllerExceptionHandler {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class) //validation exception of @Valid
     public Map<String, String> handleValidateException (MethodArgumentNotValidException ex){
         Map<String,String> errors = new HashMap<String,String>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
+
+        ex.getBindingResult().getAllErrors().forEach((error) ->
+        {String fieldName = ((FieldError) error).getField();
+
             String message = error.getDefaultMessage();
+
             errors.put(fieldName, message);
         });
         return errors;
     }
 
     /*@ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDTO> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex){
+    public ResponseEntity<ErrorDTO> methodArgumentNotValidExceptionHandler(HttpServletRequest request , MethodArgumentNotValidException ex){
+
+        // get spring errors
+        BindingResult result = ex.getBindingResult();
+        List<FieldError> fieldErrors = result.getFieldErrors();
+
+        // convert errors to standard string
+        StringBuilder errorMessage = new StringBuilder();
+        fieldErrors.forEach(f -> errorMessage.append(f.getField() + " " + f.getDefaultMessage() +  " "));
+
+        // return error info object with standard json
         ErrorDTO error = ErrorDTO.builder().code("10").message(ex.getMessage()).build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-
-        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
-        // Crea una respuesta adecuada basada en los errores de validación
-        return ResponseEntity.badRequest().body( Tu respuesta aquí );
     }*/
+
     @ExceptionHandler(value = AlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> alreadyExistExceptionHandler(AlreadyExistsException ex){
         ErrorDTO error = ErrorDTO.builder().code("1").message(ex.getMessage()).build();

@@ -20,7 +20,7 @@ public class NurseInput {
     private String dni;
     @NotNull(message = "College number is null")
     @NotEmpty(message = "College number is null")
-    @Pattern(regexp="^[0-9]+$")
+    @Pattern(regexp="^[0-9]+$", message = "College Number contains only numbers")
     private String collegeNumber;
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters")
     private String name;

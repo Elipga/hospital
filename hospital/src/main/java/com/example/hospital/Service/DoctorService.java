@@ -4,17 +4,21 @@ import com.example.hospital.Controller.DTO.HealthStaff.DoctorInput;
 import com.example.hospital.Controller.DTO.HealthStaff.DoctorOutput;
 import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffOutputCNumberAndTimetable;
 import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
+import com.example.hospital.Domain.Appointment;
 import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Exception.*;
+import com.example.hospital.Repository.AppointmentRepository;
 import com.example.hospital.Repository.DoctorRepository;
 import com.example.hospital.Repository.NurseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @Service
 public class DoctorService {
@@ -23,6 +27,12 @@ public class DoctorService {
 
     @Autowired
     NurseRepository nurseRepository;
+
+    @Autowired
+    AppointmentRepository appointmentRepository;
+
+    @Autowired
+    HealthStaffService healthStaffService;
 
     public DoctorService(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
@@ -84,12 +94,34 @@ public class DoctorService {
         }
     }
 
-
-    public boolean isDoctorOrNurse(String collegeNumber) {
-        if (doctorRepository.existsById(collegeNumber))
-            return true;
-        else return false;
+    public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfDoctor(String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilities;
+        if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor " +
+                "doesn´t exist");
+        else{
+            availabilities = healthStaffService.getAvailabilityOfStaff(collegeNumber);
+            return availabilities;
+        }
     }
 
+    public TreeMap<String, Integer> getBusiestDoctors() throws InvalidException {
+        List<Doctor> doctors = doctorRepository.findAll();
+        TreeMap<String, Integer> doctorsOutput = new TreeMap<>();
+        //TreeMap<String, Integer> doctorsOutput = new TreeMap(Comparator.comparingLong(DoctorOutputNumberOfAppointments::getNumberOfAppointments).reversed());
 
+        LocalDate[] dates = healthStaffService.temporalWindowArray();
+        LocalDate firstDay = dates[0];
+
+        for(Doctor doctor: doctors){ //all doctors
+            int appointmentCounter = 0; //set counter to 0
+            List<Appointment> appointments = appointmentRepository.findByCollegeNumber(doctor.getCollegeNumber());
+            //appointments of doctor (by college number)
+            for(Appointment appointment: appointments){
+                if(appointment.getDateOfAppointment().isAfter(firstDay.minusDays(1))){ //if appointment is on the week of temporal window
+                    appointmentCounter = appointmentCounter + 1;} //add +1 to counter
+            }
+            doctorsOutput.put(doctor.getCollegeNumber(), appointmentCounter);
+        }
+        return doctorsOutput;
+    }
 }

@@ -12,10 +12,8 @@ import com.example.hospital.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -28,6 +26,9 @@ public class AppointmentService {
     NurseRepository nurseRepository;
     @Autowired
     PatientRepository patientRepository;
+
+    @Autowired
+    HealthStaffService healthStaffService;
 
     public List<AppointmentOutput> getAllAppointments() throws IsEmptyException, InvalidException {
         List<Appointment> appointments = appointmentRepository.findAll();
@@ -82,7 +83,7 @@ public class AppointmentService {
                 (!nurseRepository.existsById(collegeNumber))))
             throw new StaffDoesNotExists("Health staff doesn't exist");
         if(!isDoctorOrNurse(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
-        LocalDate[] dates = temporalWindowArray();
+        LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate firstDay = dates[0];
         LocalDate lastDay = dates[1];
         TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> appointmentsOfWeek = new TreeMap<>();
@@ -103,20 +104,8 @@ public class AppointmentService {
         return appointmentsOfWeek; //return TreeMap
     }
 
-    public LocalDate[] temporalWindowArray() {
-        LocalDate date = LocalDate.now();
-        LocalDate[] dates = new LocalDate[2];
-
-        LocalDate startingDate = date.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-        LocalDate endingDate = startingDate.plusDays(4);
-        dates[0] = startingDate;
-        dates[1] = endingDate;
-
-        return dates;
-    }
-
     public boolean appointmentIsPossibleDate(LocalDate dateOfAppointment){
-        LocalDate[] dates = temporalWindowArray();
+        LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate startingDate = dates[0];
         LocalDate endingDate = dates[1];
 
@@ -133,12 +122,12 @@ public class AppointmentService {
         return appointmentInput.getTimeOfAppointment() != healthStaff.get().getEndingTime();
     }
 
-    public TreeMap<String, Integer> getBusiestDoctors() throws InvalidException {
+    /*public TreeMap<String, Integer> getBusiestDoctors() throws InvalidException {
         List<Doctor> doctors = doctorRepository.findAll();
         TreeMap<String, Integer> doctorsOutput = new TreeMap<>();
         //TreeMap<String, Integer> doctorsOutput = new TreeMap(Comparator.comparingLong(DoctorOutputNumberOfAppointments::getNumberOfAppointments).reversed());
 
-        LocalDate[] dates = temporalWindowArray();
+        LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate firstDay = dates[0];
 
         for(Doctor doctor: doctors){ //all doctors
@@ -152,7 +141,19 @@ public class AppointmentService {
             doctorsOutput.put(doctor.getCollegeNumber(), appointmentCounter);
         }
         return doctorsOutput;
-    }
+    }*/
+
+    /*public LocalDate[] temporalWindowArray() {
+        LocalDate date = LocalDate.now();
+        LocalDate[] dates = new LocalDate[2];
+
+        LocalDate startingDate = date.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate endingDate = startingDate.plusDays(4);
+        dates[0] = startingDate;
+        dates[1] = endingDate;
+
+        return dates;
+    }*/
     public Optional<? extends HealthStaff> doctorOrNurse(String collegeNumber) {
         if (doctorRepository.existsById(collegeNumber))
             return doctorRepository.findById(collegeNumber);
@@ -195,10 +196,27 @@ public class AppointmentService {
         return availabilities;
     }*/
 
-    public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfStaff(String collegeNumber) throws StaffDoesNotExists {
-        if ((!doctorRepository.existsById(collegeNumber) &&
-                (!nurseRepository.existsById(collegeNumber))))
-            throw new StaffDoesNotExists("Health staff doesn't exist");
+    /*public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfDoctor(String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilities;
+        if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor" +
+                "doesn´t exist");
+        else{
+            availabilities = getAvailabilityOfStaff(collegeNumber);
+            return availabilities;
+        }
+    }*/
+    /*public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfNurse(String collegeNumber) throws StaffDoesNotExists, NurseDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilities;
+        if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse" +
+                "doesn´t exist");
+        else{
+            availabilities = getAvailabilityOfStaff(collegeNumber);
+            return availabilities;
+        }
+    }*/
+
+    /*public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfStaff(String collegeNumber) throws StaffDoesNotExists {
+
         Optional<? extends HealthStaff> healthStaff = doctorOrNurse(collegeNumber);
         LocalTime startingTime = healthStaff.get().getStartingTime();
         LocalTime endingTime = healthStaff.get().getEndingTime();
@@ -222,5 +240,5 @@ public class AppointmentService {
             date = date.plusDays(1);
         }
         return availabilities;
-    }
+    }*/
 }

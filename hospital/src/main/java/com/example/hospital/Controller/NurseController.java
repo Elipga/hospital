@@ -14,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.TreeMap;
 
 @RestController
 public class NurseController {
@@ -38,5 +41,13 @@ public class NurseController {
                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, NurseDoesNotExists {
             HealthStaffOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(nurse);
+    }
+
+    @Operation(summary = "Get availability of nurse for next temporal window")
+    @GetMapping("/nurses/{collegeNumber}/availabilities")
+    public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfNurse(@PathVariable String collegeNumber) throws NurseDoesNotExists, StaffDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
+        availabilityOutputs = nurseService.getAvailabilityOfNurse(collegeNumber);
+        return ResponseEntity.ok(availabilityOutputs);
     }
 }

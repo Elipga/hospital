@@ -11,9 +11,12 @@ import com.example.hospital.Repository.NurseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @Service
 public class NurseService {
@@ -23,6 +26,9 @@ public class NurseService {
 
     @Autowired
     DoctorRepository doctorRepository;
+
+    @Autowired
+    HealthStaffService healthStaffService;
 
     public List<NurseOutput> getAllNurses() throws IsEmptyException, InvalidException {
         List<Nurse> nurses = nurseRepository.findAll();
@@ -60,5 +66,15 @@ public class NurseService {
         nurseSet.setEndingTime(healthStaffUpdate.getEndingTime());
         nurseRepository.save(nurseSet);
         return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
+    }
+
+    public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfNurse(String collegeNumber) throws StaffDoesNotExists, NurseDoesNotExists {
+        TreeMap<LocalDate, List<LocalTime>> availabilities;
+        if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse" +
+                "doesn´t exist");
+        else{
+            availabilities = healthStaffService.getAvailabilityOfStaff(collegeNumber);
+            return availabilities;
+        }
     }
 }

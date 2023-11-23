@@ -6,7 +6,6 @@ import com.example.hospital.Controller.DTO.Appointment.AppointmentOutputHourAndA
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.AppointmentService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,29 +48,29 @@ public class AppointmentController {
                     appointmentService.getAppointmentsOfDoctorAndWeek(collegeNumber);
             return ResponseEntity.ok(appointmentsOutput);
     }
-    @Operation(summary = "Get busiest doctors for next temporal window")
+    /*@Operation(summary = "Get busiest doctors for next temporal window")
     @GetMapping("doctors/busy")
     public ResponseEntity<TreeMap<String, Integer>> getBusiestDoctors() throws InvalidException {
         TreeMap<String, Integer> doctors = null;
             doctors = appointmentService.getBusiestDoctors();
             return ResponseEntity.ok(doctors);
-    }
-    @Operation(summary = "Get availability of doctor for next temporal window")
+    }*/
+
+
+    /*@Operation(summary = "Get availability of doctor for next temporal window")
     @GetMapping("/doctors/{collegeNumber}/availabilities")
     public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
-            if(!appointmentService.isDoctorOrNurse(collegeNumber)) throw new DoctorDoesNotExists("Doctor" +
-                    "doesn´t exist");
-            availabilityOutputs = appointmentService.getAvailabilityOfStaff(collegeNumber);
-            return ResponseEntity.ok(availabilityOutputs);
-    }
-    @Operation(summary = "Get availability of nurse for next temporal window")
+        availabilityOutputs = appointmentService.getAvailabilityOfDoctor(collegeNumber);
+        return ResponseEntity.ok(availabilityOutputs);
+    }*/
+
+    /*@Operation(summary = "Get availability of nurse for next temporal window")
     @GetMapping("/nurses/{collegeNumber}/availabilities")
     public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfNurse(@PathVariable String collegeNumber) throws NurseDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilityOutputs = null;
-            if(appointmentService.isDoctorOrNurse(collegeNumber)) throw new NurseDoesNotExists("Nurse" +
-                    "doesn´t exist");
-            availabilityOutputs = appointmentService.getAvailabilityOfStaff(collegeNumber);
-            return ResponseEntity.ok(availabilityOutputs);
-    }
+        availabilityOutputs = appointmentService.getAvailabilityOfNurse(collegeNumber);
+        return ResponseEntity.ok(availabilityOutputs);
+    }*/
+
 }
