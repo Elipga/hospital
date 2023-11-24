@@ -1,6 +1,5 @@
 package com.example.hospital.Domain;
 
-
 import com.example.hospital.Exception.InvalidException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

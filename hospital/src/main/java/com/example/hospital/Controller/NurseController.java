@@ -7,7 +7,6 @@ import com.example.hospital.Controller.DTO.HealthStaff.NurseOutput;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.NurseService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,6 @@ public class NurseController {
             HealthStaffOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(nurse);
     }
-
     @Operation(summary = "Get availability of nurse for next temporal window")
     @GetMapping("/nurses/{collegeNumber}/availabilities")
     public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfNurse(@PathVariable String collegeNumber) throws NurseDoesNotExists, StaffDoesNotExists {

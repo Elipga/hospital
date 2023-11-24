@@ -15,7 +15,6 @@ import java.util.List;
 
 @Service
 public class PatientService {
-
     @Autowired
     PatientRepository patientRepository;
 
@@ -36,5 +35,4 @@ public class PatientService {
                 ("Patient already exists");
         else patientRepository.save(newPatient);
     }
-
 }

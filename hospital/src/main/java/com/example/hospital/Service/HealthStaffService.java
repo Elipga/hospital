@@ -29,9 +29,6 @@ public class HealthStaffService { //common methods for doctor and nurse
     AppointmentRepository appointmentRepository;
 
     public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfStaff(String collegeNumber) throws StaffDoesNotExists {
-        /*if ((!doctorRepository.existsById(collegeNumber) &&
-                (!nurseRepository.existsById(collegeNumber))))
-            throw new StaffDoesNotExists("Health staff doesn't exist");*/
         Optional<? extends HealthStaff> healthStaff = doctorOrNurse(collegeNumber);
         LocalTime startingTime = healthStaff.get().getStartingTime();
         LocalTime endingTime = healthStaff.get().getEndingTime();

@@ -34,11 +34,6 @@ public class DoctorService {
     @Autowired
     HealthStaffService healthStaffService;
 
-    /*public DoctorService(DoctorRepository doctorRepository) {
-
-        this.doctorRepository = doctorRepository;
-    }*/
-
     public List<DoctorOutput> getAllDoctors() throws IsEmptyException, InvalidException {
         List<Doctor> doctors = doctorRepository.findAll();
         List<DoctorOutput> doctorsOutput = new ArrayList<>();
@@ -49,7 +44,6 @@ public class DoctorService {
         }
         return doctorsOutput;
     }
-
     public void addDoctor(DoctorInput doctorInput) throws AlreadyExistsException, InvalidException {
         Doctor newDoctor = DoctorInput.getDoctor(doctorInput);
         if (doctorRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
@@ -64,11 +58,7 @@ public class DoctorService {
             doctorRepository.save(newDoctor);
         }
     }
-
     public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws DoctorDoesNotExists, InvalidException, AlreadyExistsException {
-        //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
-          //  throw new StaffDoesNotExists("Health staff does not exist");
-        //if (isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
         Doctor doctorSet = doctor.get();
@@ -80,7 +70,6 @@ public class DoctorService {
         doctorRepository.save(doctorSet);
         return HealthStaffOutputCNumberAndTimetable.getHealthStaff(collegeNumber, healthStaffUpdate);
     }
-
     public DoctorOutput getDoctorById(String collegeNumber) throws DoctorDoesNotExists, InvalidException {
         if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         else {
@@ -89,7 +78,6 @@ public class DoctorService {
             return doctorOutput;
         }
     }
-
     public void deleteDoctor(String collegeNumber) throws DoctorDoesNotExists {
         if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         else {
@@ -97,7 +85,6 @@ public class DoctorService {
             doctorRepository.delete(doctor.get());
         }
     }
-
     public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfDoctor(String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilities;
         if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor " +
@@ -107,12 +94,9 @@ public class DoctorService {
             return availabilities;
         }
     }
-
     public TreeMap<String, Integer> getBusiestDoctors() throws InvalidException {
         List<Doctor> doctors = doctorRepository.findAll();
         TreeMap<String, Integer> doctorsOutput = new TreeMap<>();
-        //TreeMap<String, Integer> doctorsOutput = new TreeMap(Comparator.comparingLong(DoctorOutputNumberOfAppointments::getNumberOfAppointments).reversed());
-
         LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate firstDay = dates[0];
 

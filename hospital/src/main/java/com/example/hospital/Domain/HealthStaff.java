@@ -4,14 +4,12 @@ import com.example.hospital.Controller.DTO.Validation;
 import com.example.hospital.Exception.InvalidException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalTime;
-
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) //Each class in the inheritance hierarchy has its own table in the database
@@ -57,11 +55,9 @@ public class HealthStaff {
         this.endingTime = endingTime;
         validation.validateTime(startingTime,endingTime);
     }
-
     public void setStartingTime(LocalTime startingTime) {
         this.startingTime = startingTime;
     }
-
     public void setEndingTime(LocalTime endingTime) {
         this.endingTime = endingTime;
     }

@@ -7,7 +7,6 @@ import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

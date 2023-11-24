@@ -43,11 +43,9 @@ public class NurseInput {
         validation.validateTime(endingTime);
         this.endingTime = endingTime;
         validation.validateTime(startingTime,endingTime);
-
     }
     public static Nurse getNurse(NurseInput nurseInput) throws InvalidException {
         return new Nurse(nurseInput.getDni(), nurseInput.getCollegeNumber(), nurseInput.name, nurseInput.startingTime,
                 nurseInput.getEndingTime());
     }
-
 }

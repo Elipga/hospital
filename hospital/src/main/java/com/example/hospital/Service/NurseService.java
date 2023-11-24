@@ -56,9 +56,6 @@ public class NurseService {
     }
 
     public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws NurseDoesNotExists, InvalidException, AlreadyExistsException {
-        //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
-          //  throw new StaffDoesNotExists("Health staff does not exist");
-        //if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");
         if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse doesn´t exist");
         Optional<Nurse> nurse = nurseRepository.findById(collegeNumber);
         Nurse nurseSet = nurse.get();

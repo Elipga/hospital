@@ -4,7 +4,6 @@ import com.example.hospital.Controller.DTO.Validation;
 import com.example.hospital.Exception.InvalidException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
@@ -15,7 +14,6 @@ import java.time.LocalTime;
 @IdClass(value = AppointmentPK.class)
 @Table(name = "appointments")
 @Getter
-@Setter
 @NoArgsConstructor
 public class Appointment {
     @Id

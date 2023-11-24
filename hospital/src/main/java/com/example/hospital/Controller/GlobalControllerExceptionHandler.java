@@ -4,37 +4,17 @@ import com.example.hospital.Controller.DTO.ErrorDTO;
 import com.example.hospital.Exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
-
-    /*@ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDTO> methodArgumentNotValidExceptionHandler(HttpServletRequest request , MethodArgumentNotValidException ex){
-
-        // get spring errors
-        BindingResult result = ex.getBindingResult();
-        List<FieldError> fieldErrors = result.getFieldErrors();
-
-        // convert errors to standard string
-        StringBuilder errorMessage = new StringBuilder();
-        fieldErrors.forEach(f -> errorMessage.append(f.getField() + " " + f.getDefaultMessage() +  " "));
-
-        // return error info object with standard json
-        ErrorDTO error = ErrorDTO.builder().code("10").message(ex.getMessage()).build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }*/
-
     @ExceptionHandler(value = AlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> alreadyExistExceptionHandler(AlreadyExistsException ex){
         ErrorDTO error = ErrorDTO.builder().code("1").message(ex.getMessage()).build();

@@ -7,7 +7,6 @@ import com.example.hospital.Exception.InvalidException;
 import com.example.hospital.Exception.IsEmptyException;
 import com.example.hospital.Service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
