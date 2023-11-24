@@ -44,9 +44,9 @@ public class NurseService {
     public void addNurse(NurseInput nurseInput) throws AlreadyExistsException, InvalidException {
         Nurse newNurse = NurseInput.getNurse(nurseInput);
         if(doctorRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
-                ("Already exist a nurse with that college number");
+                ("Already exist a doctor with that college number");
         if(doctorRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
-                ("Already exist a nurse with that dni");
+                ("Already exist a doctor with that dni");
         if(nurseRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Nurse already exists");
         if(nurseRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
@@ -55,13 +55,16 @@ public class NurseService {
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws NurseDoesNotExists, InvalidException {
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfNurse(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws NurseDoesNotExists, InvalidException, AlreadyExistsException {
         //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
           //  throw new StaffDoesNotExists("Health staff does not exist");
         //if(isDoctorOrNurse(collegeNumber) == true) throw new NurseDoesNotExists("Nurse doesn´t exist");
         if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse doesn´t exist");
         Optional<Nurse> nurse = nurseRepository.findById(collegeNumber);
         Nurse nurseSet = nurse.get();
+        if((nurseSet.getStartingTime().equals(healthStaffUpdate.getStartingTime())) && (nurseSet.getEndingTime()
+                .equals(healthStaffUpdate.getEndingTime()))) throw new AlreadyExistsException("There is no changes " +
+                "in timetable");
         nurseSet.setStartingTime(healthStaffUpdate.getStartingTime());
         nurseSet.setEndingTime(healthStaffUpdate.getEndingTime());
         nurseRepository.save(nurseSet);
@@ -70,7 +73,7 @@ public class NurseService {
 
     public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfNurse(String collegeNumber) throws StaffDoesNotExists, NurseDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilities;
-        if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse" +
+        if(!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse " +
                 "doesn´t exist");
         else{
             availabilities = healthStaffService.getAvailabilityOfStaff(collegeNumber);

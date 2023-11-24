@@ -38,7 +38,7 @@ public class NurseController {
     @Operation(summary = "Set timetable of nurse", description = "Update Starting and Ending time")
     @PutMapping("/nurses/{collegeNumber}")
     public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfNurse(@PathVariable String collegeNumber,
-                                                                                    @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, NurseDoesNotExists {
+                                                                                    @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, NurseDoesNotExists, AlreadyExistsException {
             HealthStaffOutputCNumberAndTimetable nurse = nurseService.setTimeTableOfNurse(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(nurse);
     }

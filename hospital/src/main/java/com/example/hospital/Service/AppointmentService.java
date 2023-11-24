@@ -59,7 +59,7 @@ public class AppointmentService {
         if(appointmentRepository.existsByCollegeNumberAndPatientDniAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getCollegeNumber(),
                 appointmentInput.getPatientDni(),appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
                 AlreadyExistsException("Appointment already exists");
-        if (!appointmentIsPossibleDate(appointmentInput.getDateOfAppointment())) throw new DateOutOfRange("Date" +
+        if (!appointmentIsPossibleDate(appointmentInput.getDateOfAppointment())) throw new DateOutOfRange("Date " +
                 "out of temporal window");
         if(!appointmentIsPossibleTime(appointmentInput)) throw new TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff
     }
@@ -67,6 +67,8 @@ public class AppointmentService {
     public List<AppointmentOutput> getAppointmentsOfPatient(String patientDni, String dateOfAppointment) throws PatientDoesNotExists, IsEmptyException, InvalidException {
         if (!patientRepository.existsById(patientDni)) throw new PatientDoesNotExists("Patient doesn´t" +
                 "exist");
+        if(!dateOfAppointment.matches("\\d{4}-\\d{2}-\\d{2}")) throw new InvalidException("Format of " +
+                "date of appointment is YYYY-MM-DD");
         LocalDate date = LocalDate.parse(dateOfAppointment);
         List<Appointment> appointments = appointmentRepository.findByPatientDniAndDateOfAppointmentOrderByTimeOfAppointment(patientDni, date);
         if(appointments.isEmpty()) throw new IsEmptyException("Patient doesn´t have appointments that day");
@@ -78,7 +80,7 @@ public class AppointmentService {
         return appointmentOutputs;
     }
 
-    public TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> getAppointmentsOfDoctorAndWeek(String collegeNumber) throws StaffDoesNotExists, DoctorDoesNotExists, InvalidException {
+    public TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> getAppointmentsOfDoctorAndWeek(String collegeNumber) throws StaffDoesNotExists, DoctorDoesNotExists, InvalidException, IsEmptyException {
         if ((!doctorRepository.existsById(collegeNumber) &&
                 (!nurseRepository.existsById(collegeNumber))))
             throw new StaffDoesNotExists("Health staff doesn't exist");
@@ -89,6 +91,7 @@ public class AppointmentService {
         TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> appointmentsOfWeek = new TreeMap<>();
         List<Appointment> appointments = appointmentRepository.findByCollegeNumberAndDateOfAppointmentBetween(collegeNumber,
                 firstDay,lastDay);
+        if(appointments.isEmpty()) throw new IsEmptyException("Doctor doesn´t have appointments for the week");
 
         while (firstDay.isBefore(lastDay.plusDays(1))){ //Iterating though days of week (temporal window)
             ArrayList<AppointmentOutputHourAndAndPatient> appointmentOutputs = new ArrayList<>(); // create ArrayList for outputs

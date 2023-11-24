@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class Validation {
     public void validateDni(String dni) throws InvalidException {
         if((dni.length() != 9)) throw new InvalidException("Id has 9 chars");
-        if(!dni.matches("[0-9]{8}[A-Za-z]"))throw new InvalidException("DNI must contain 8 numbers" +
+        if(!dni.matches("[0-9]{8}[A-Za-z]"))throw new InvalidException("DNI must contain 8 numbers " +
                 "and 1 letter");
     }
     public void validateCNumber(String collegeNumber) throws InvalidException {

@@ -45,7 +45,7 @@ public class AppointmentController {
     @Operation(summary = "Get appointments of doctor of next temporal window")
     @GetMapping("doctors/{collegeNumber}/appointments")
     public ResponseEntity<TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>>> getAppointmentsOfDoctorAndWeek(
-            @PathVariable String collegeNumber) throws InvalidException, StaffDoesNotExists, DoctorDoesNotExists {
+            @PathVariable String collegeNumber) throws InvalidException, StaffDoesNotExists, DoctorDoesNotExists, IsEmptyException {
             TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> appointmentsOutput =
                     appointmentService.getAppointmentsOfDoctorAndWeek(collegeNumber);
             return ResponseEntity.ok(appointmentsOutput);

@@ -38,7 +38,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = AlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> alreadyExistExceptionHandler(AlreadyExistsException ex){
         ErrorDTO error = ErrorDTO.builder().code("1").message(ex.getMessage()).build();
-        return new ResponseEntity<>(error, HttpStatus.ALREADY_REPORTED);
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
     @ExceptionHandler(value = InvalidException.class)
     public ResponseEntity<ErrorDTO> invalidExceptionHandler(InvalidException ex){

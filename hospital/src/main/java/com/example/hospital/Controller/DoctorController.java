@@ -45,7 +45,7 @@ public class DoctorController {
     @Operation(summary = "Set timetable of doctor", description = "Update Starting and Ending time")
     @PutMapping("/doctors/{collegeNumber}")
     public ResponseEntity<HealthStaffOutputCNumberAndTimetable> setTimetableOfDoctor(@PathVariable String collegeNumber,
-                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, DoctorDoesNotExists {
+                                                                                     @RequestBody HealthStaffUpdate healthStaffUpdate) throws InvalidException, DoctorDoesNotExists, AlreadyExistsException {
             HealthStaffOutputCNumberAndTimetable doctor = doctorService.setTimeTableOfDoctor(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(doctor);
     }

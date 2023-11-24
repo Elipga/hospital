@@ -65,13 +65,16 @@ public class DoctorService {
         }
     }
 
-    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws DoctorDoesNotExists, InvalidException {
+    public HealthStaffOutputCNumberAndTimetable setTimeTableOfDoctor(String collegeNumber, HealthStaffUpdate healthStaffUpdate) throws DoctorDoesNotExists, InvalidException, AlreadyExistsException {
         //if ((!doctorRepository.existsById(collegeNumber)) && (!nurseRepository.existsById(collegeNumber)))
           //  throw new StaffDoesNotExists("Health staff does not exist");
         //if (isDoctorOrNurse(collegeNumber) == false) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
         Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
         Doctor doctorSet = doctor.get();
+        if((doctorSet.getStartingTime().equals(healthStaffUpdate.getStartingTime())) && (doctorSet.getEndingTime()
+                .equals(healthStaffUpdate.getEndingTime()))) throw new AlreadyExistsException("There is no changes " +
+                "in timetable");
         doctorSet.setStartingTime(healthStaffUpdate.getStartingTime());
         doctorSet.setEndingTime(healthStaffUpdate.getEndingTime());
         doctorRepository.save(doctorSet);
