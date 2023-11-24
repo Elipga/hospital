@@ -3,7 +3,8 @@ CREATE TABLE appointments(
     patient_dni char(9),
     date_of_appointment date,
     time_of_appointment time,
-    CONSTRAINT PK_appointments PRIMARY KEY (college_number, patient_dni, date_of_appointment, time_of_appointment)
+    CONSTRAINT PK_appointments PRIMARY KEY (college_number, patient_dni, date_of_appointment, time_of_appointment),
+    CONSTRAINT FK_patient_dni FOREIGN KEY (patient_dni) REFERENCES patients(dni)
     );
 
 

@@ -23,10 +23,12 @@ public class AppointmentController {
     AppointmentService appointmentService;
     @Operation(summary = "Add appointment")
     @PostMapping("/appointments")
-    public ResponseEntity<String> addAppointment(@Valid @RequestBody AppointmentInput appointmentInput) throws PatientDoesNotExists, AlreadyExistsException, InvalidException, DateOutOfRange, StaffDoesNotExists, TimeOutOfRangeException {
+    public ResponseEntity<String> addAppointment(@Valid @RequestBody AppointmentInput appointmentInput) throws PatientDoesNotExists,
+            AlreadyExistsException, InvalidException, DateOutOfRange, StaffDoesNotExists, TimeOutOfRangeException {
             appointmentService.addAppointment(appointmentInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     @Operation(summary = "Get all appointments")
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentOutput>> getAllAppointments() throws IsEmptyException, InvalidException {

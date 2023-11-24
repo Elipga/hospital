@@ -1,6 +1,5 @@
 package com.example.hospital.Service;
 
-
 import com.example.hospital.Controller.DTO.Appointment.AppointmentInput;
 import com.example.hospital.Controller.DTO.Appointment.AppointmentOutput;
 import com.example.hospital.Controller.DTO.Appointment.AppointmentOutputHourAndAndPatient;
@@ -10,7 +9,6 @@ import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDate;
 import java.util.*;
@@ -58,6 +56,9 @@ public class AppointmentService {
         if(appointmentRepository.existsByPatientDniAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getPatientDni(),
                 appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
                 AlreadyExistsException("Patient has already an appointment");
+        if(appointmentRepository.existsByCollegeNumberAndPatientDniAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getCollegeNumber(),
+                appointmentInput.getPatientDni(),appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
+                AlreadyExistsException("Appointment already exists");
         if (!appointmentIsPossibleDate(appointmentInput.getDateOfAppointment())) throw new DateOutOfRange("Date" +
                 "out of temporal window");
         if(!appointmentIsPossibleTime(appointmentInput)) throw new TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff

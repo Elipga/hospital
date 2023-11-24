@@ -18,20 +18,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class) //validation exception of @Valid
-    public Map<String, String> handleValidateException (MethodArgumentNotValidException ex){
-        Map<String,String> errors = new HashMap<String,String>();
-
-        ex.getBindingResult().getAllErrors().forEach((error) ->
-        {String fieldName = ((FieldError) error).getField();
-
-            String message = error.getDefaultMessage();
-
-            errors.put(fieldName, message);
-        });
-        return errors;
-    }
 
     /*@ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> methodArgumentNotValidExceptionHandler(HttpServletRequest request , MethodArgumentNotValidException ex){
@@ -93,5 +79,20 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ErrorDTO> nurseDoesNotExistsHandler(NurseDoesNotExists ex){
         ErrorDTO error = ErrorDTO.builder().code("9").message((ex.getMessage())).build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class) //validation exception of @Valid
+    public Map<String, String> handleValidateException (MethodArgumentNotValidException ex){
+        Map<String,String> errors = new HashMap<String,String>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) ->
+        {String fieldName = ((FieldError) error).getField();
+
+            String message = error.getDefaultMessage();
+
+            errors.put(fieldName, message);
+        });
+        return errors;
     }
 }

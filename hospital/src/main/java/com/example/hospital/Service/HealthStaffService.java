@@ -49,10 +49,10 @@ public class HealthStaffService { //common methods for doctor and nurse
                         collegeNumber, date, time)) { //if appointment doesn´t exist
                     availability.add(time); //add to availability list
                 }
-                time = time.plusMinutes(15);
+                time = time.plusMinutes(15); //+ 15 minutes each round
             }
             availabilities.put(date, availability);
-            date = date.plusDays(1);
+            date = date.plusDays(1);//+ 1 day each round
         }
         return availabilities;
     }
@@ -67,8 +67,8 @@ public class HealthStaffService { //common methods for doctor and nurse
         LocalDate date = LocalDate.now();
         LocalDate[] dates = new LocalDate[2];
 
-        LocalDate startingDate = date.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-        LocalDate endingDate = startingDate.plusDays(4);
+        LocalDate startingDate = date.with(TemporalAdjusters.next(DayOfWeek.MONDAY)); //jump to next Monday
+        LocalDate endingDate = startingDate.plusDays(4); //add 4 days to Monday
         dates[0] = startingDate;
         dates[1] = endingDate;
 

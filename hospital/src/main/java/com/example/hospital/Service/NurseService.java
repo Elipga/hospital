@@ -44,9 +44,9 @@ public class NurseService {
     public void addNurse(NurseInput nurseInput) throws AlreadyExistsException, InvalidException {
         Nurse newNurse = NurseInput.getNurse(nurseInput);
         if(doctorRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
-                ("Doctor already exists");
+                ("Already exist a nurse with that college number");
         if(doctorRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
-                ("Doctor already exists");
+                ("Already exist a nurse with that dni");
         if(nurseRepository.existsById(nurseInput.getCollegeNumber())) throw new AlreadyExistsException
                 ("Nurse already exists");
         if(nurseRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException

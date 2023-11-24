@@ -21,4 +21,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
 
     boolean existsByPatientDniAndDateOfAppointmentAndTimeOfAppointment(String patientId, LocalDate dateOfAppointment,
                                                                       LocalTime timeOfAppointment );
+    boolean existsByCollegeNumberAndPatientDniAndDateOfAppointmentAndTimeOfAppointment(String collegeNumber, String patientId,
+                                                                                      LocalDate dateOfAppointment,LocalTime timeOfAppointment);
 }

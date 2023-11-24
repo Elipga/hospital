@@ -34,9 +34,10 @@ public class DoctorService {
     @Autowired
     HealthStaffService healthStaffService;
 
-    public DoctorService(DoctorRepository doctorRepository) {
+    /*public DoctorService(DoctorRepository doctorRepository) {
+
         this.doctorRepository = doctorRepository;
-    }
+    }*/
 
     public List<DoctorOutput> getAllDoctors() throws IsEmptyException, InvalidException {
         List<Doctor> doctors = doctorRepository.findAll();
@@ -56,9 +57,9 @@ public class DoctorService {
         if (doctorRepository.existsByDni(doctorInput.getDni())) throw new AlreadyExistsException
                 ("Doctor already exists");
         if (nurseRepository.existsById(doctorInput.getCollegeNumber())) throw new AlreadyExistsException
-                ("Nurse already exists");
+                ("Already exist a nurse with that college number");
         if (nurseRepository.existsByDni(doctorInput.getDni())) throw new AlreadyExistsException
-                ("Nurse already exists");
+                ("Already exist a nurse with that dni");
         else {
             doctorRepository.save(newDoctor);
         }

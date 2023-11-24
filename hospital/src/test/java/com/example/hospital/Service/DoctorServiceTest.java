@@ -35,7 +35,7 @@ class DoctorServiceTest {
 
     @BeforeEach
     void setUp() {
-        doctorService = new DoctorService(doctorRepository);
+        //doctorService = new DoctorService(doctorRepository);
         Mockito.mock(DoctorService.class);
     }
     @Test
