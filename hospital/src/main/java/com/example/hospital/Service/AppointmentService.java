@@ -23,27 +23,13 @@ public class AppointmentService {
     NurseRepository nurseRepository;
     @Autowired
     PatientRepository patientRepository;
-
     @Autowired
     HealthStaffService healthStaffService;
-
-    public List<AppointmentOutput> getAllAppointments() throws IsEmptyException, InvalidException {
-        List<Appointment> appointments = appointmentRepository.findAll();
-        List<AppointmentOutput> appointmentsOutput = new ArrayList<>();
-        if (appointments.isEmpty()) throw new IsEmptyException("List of appointments is empty");
-
-        for (Appointment appointment : appointments) {
-            appointmentsOutput.add(AppointmentOutput.getAppointment(appointment));
-        }
-        return appointmentsOutput;
-    }
-
     public void addAppointment(AppointmentInput appointmentInput) throws InvalidException, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, StaffDoesNotExists, TimeOutOfRangeException {
         validateAppointment(appointmentInput);
         Appointment newAppointment = AppointmentInput.getAppointment(appointmentInput);
         appointmentRepository.save(newAppointment);
     }
-
     public void validateAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, TimeOutOfRangeException {
         if ((!doctorRepository.existsById(appointmentInput.getCollegeNumber()) &&
                 (!nurseRepository.existsById(appointmentInput.getCollegeNumber()))))
@@ -63,7 +49,6 @@ public class AppointmentService {
                 "out of temporal window");
         if(!appointmentIsPossibleTime(appointmentInput)) throw new TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff
     }
-
     public List<AppointmentOutput> getAppointmentsOfPatient(String patientDni, String dateOfAppointment) throws PatientDoesNotExists, IsEmptyException, InvalidException {
         if (!patientRepository.existsById(patientDni)) throw new PatientDoesNotExists("Patient doesn´t" +
                 "exist");
@@ -79,12 +64,8 @@ public class AppointmentService {
         }
         return appointmentOutputs;
     }
-
     public TreeMap<LocalDate, List<AppointmentOutputHourAndAndPatient>> getAppointmentsOfDoctorAndWeek(String collegeNumber) throws StaffDoesNotExists, DoctorDoesNotExists, InvalidException, IsEmptyException {
-        if ((!doctorRepository.existsById(collegeNumber) &&
-                (!nurseRepository.existsById(collegeNumber))))
-            throw new StaffDoesNotExists("Health staff doesn't exist");
-        if(!isDoctorOrNurse(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
+        if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doen´t exist");
         LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate firstDay = dates[0];
         LocalDate lastDay = dates[1];
@@ -114,7 +95,6 @@ public class AppointmentService {
 
         return !dateOfAppointment.isBefore(startingDate) && !dateOfAppointment.isAfter(endingDate);
     }
-
     public boolean appointmentIsPossibleTime(AppointmentInput appointmentInput){
         Optional<? extends HealthStaff> healthStaff = doctorOrNurse(appointmentInput.getCollegeNumber());
         if (appointmentInput.getTimeOfAppointment().isBefore(healthStaff.get().getStartingTime()) || //time before or after timetable of staff
@@ -128,9 +108,5 @@ public class AppointmentService {
         if (doctorRepository.existsById(collegeNumber))
             return doctorRepository.findById(collegeNumber);
         else return nurseRepository.findById(collegeNumber);
-    }
-
-    public boolean isDoctorOrNurse(String collegeNumber){
-        return doctorRepository.existsById(collegeNumber);
     }
 }

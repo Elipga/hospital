@@ -78,13 +78,6 @@ public class DoctorService {
             return doctorOutput;
         }
     }
-    public void deleteDoctor(String collegeNumber) throws DoctorDoesNotExists {
-        if (!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor doesn´t exist");
-        else {
-            Optional<Doctor> doctor = doctorRepository.findById(collegeNumber);
-            doctorRepository.delete(doctor.get());
-        }
-    }
     public TreeMap<LocalDate, List<LocalTime>> getAvailabilityOfDoctor(String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {
         TreeMap<LocalDate, List<LocalTime>> availabilities;
         if(!doctorRepository.existsById(collegeNumber)) throw new DoctorDoesNotExists("Doctor " +

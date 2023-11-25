@@ -48,14 +48,6 @@ public class DoctorController {
             HealthStaffOutputCNumberAndTimetable doctor = doctorService.setTimeTableOfDoctor(collegeNumber, healthStaffUpdate);
             return ResponseEntity.ok(doctor);
     }
-
-    @Operation(summary = "Delete doctor")
-    @DeleteMapping("/doctors/{collegeNumber}")
-    public ResponseEntity<String> deleteDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists {
-            doctorService.deleteDoctor(collegeNumber);
-            return ResponseEntity.ok().build();
-    }
-
     @Operation(summary = "Get availability of doctor for next temporal window")
     @GetMapping("/doctors/{collegeNumber}/availabilities")
     public ResponseEntity <TreeMap<LocalDate, List<LocalTime>>> getAvailabilityOfDoctor(@PathVariable String collegeNumber) throws DoctorDoesNotExists, StaffDoesNotExists {

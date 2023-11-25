@@ -27,13 +27,6 @@ public class AppointmentController {
             appointmentService.addAppointment(appointmentInput);
             return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-    @Operation(summary = "Get all appointments")
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentOutput>> getAllAppointments() throws IsEmptyException, InvalidException {
-            List<AppointmentOutput> appointmentsOutput = appointmentService.getAllAppointments();
-            return ResponseEntity.ok(appointmentsOutput);
-    }
     @Operation(summary = "Get appointments of patient")
     @GetMapping("/patients/{patientDni}/appointments")
     public ResponseEntity<List<AppointmentOutput>> getAppointmentsOfPatient
