@@ -19,7 +19,8 @@ public class PatientInput {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters without accent mark")
     private String name;
     @Pattern(regexp = "^[a-zA-Z0-9,. ]+$", message = "Address contains only letters, numbers, commas" +
-            " and periods")    private String address;
+            " and periods")
+    private String address;
     public PatientInput(String dni, String name, String address) throws InvalidException {
         Validation validation = new Validation();
         validation.validateDni(dni);

@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class DoctorService {
@@ -87,9 +84,10 @@ public class DoctorService {
             return availabilities;
         }
     }
-    public TreeMap<String, Integer> getBusiestDoctors() throws InvalidException {
+    public TreeMap<Integer, String> getBusiestDoctors() throws IsEmptyException {
         List<Doctor> doctors = doctorRepository.findAll();
-        TreeMap<String, Integer> doctorsOutput = new TreeMap<>();
+        if(doctors.isEmpty()) throw new IsEmptyException("List of doctors is empty");
+        TreeMap<Integer, String> doctorsOutput = new TreeMap<>(Comparator.reverseOrder());
         LocalDate[] dates = healthStaffService.temporalWindowArray();
         LocalDate firstDay = dates[0];
 
@@ -101,7 +99,7 @@ public class DoctorService {
                 if(appointment.getDateOfAppointment().isAfter(firstDay.minusDays(1))){ //if appointment is on the week of temporal window
                     appointmentCounter = appointmentCounter + 1;} //add +1 to counter
             }
-            doctorsOutput.put(doctor.getCollegeNumber(), appointmentCounter);
+            doctorsOutput.put(appointmentCounter, doctor.getCollegeNumber());
         }
         return doctorsOutput;
     }

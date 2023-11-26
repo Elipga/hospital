@@ -58,8 +58,8 @@ public class DoctorController {
 
     @Operation(summary = "Get busiest doctors for next temporal window")
     @GetMapping("doctors/busy")
-    public ResponseEntity<TreeMap<String, Integer>> getBusiestDoctors() throws InvalidException {
-        TreeMap<String, Integer> doctors = null;
+    public ResponseEntity<TreeMap<Integer, String>> getBusiestDoctors() throws InvalidException, IsEmptyException {
+        TreeMap<Integer, String> doctors = null;
         doctors = doctorService.getBusiestDoctors();
         return ResponseEntity.ok(doctors);
     }
