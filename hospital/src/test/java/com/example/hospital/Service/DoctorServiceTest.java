@@ -79,7 +79,7 @@ class DoctorServiceTest {
     }
 
     /*@Test
-    void hola() throws InvalidException, AlreadyExistsException {
+    void addDoctor() throws InvalidException, AlreadyExistsException {
         String startString = "15:30:00";
         String endString = "17:00:00";
 

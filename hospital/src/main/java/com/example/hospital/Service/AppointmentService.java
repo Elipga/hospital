@@ -30,10 +30,11 @@ public class AppointmentService {
         Appointment newAppointment = AppointmentInput.getAppointment(appointmentInput);
         appointmentRepository.save(newAppointment);
     }
-    public void validateAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, TimeOutOfRangeException {
+    public void validateAppointment(AppointmentInput appointmentInput) throws StaffDoesNotExists, PatientDoesNotExists, AlreadyExistsException, DateOutOfRange, TimeOutOfRangeException, InvalidException {
         if ((!doctorRepository.existsById(appointmentInput.getCollegeNumber()) &&
                 (!nurseRepository.existsById(appointmentInput.getCollegeNumber()))))
             throw new StaffDoesNotExists("Health staff does not exist");
+        Optional<? extends HealthStaff> healthStaff = doctorOrNurse(appointmentInput.getCollegeNumber());
         if (!patientRepository.existsById(appointmentInput.getPatientDni())) throw new PatientDoesNotExists
                 ("Patient does not exists");
         if (appointmentRepository.existsByCollegeNumberAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getCollegeNumber(),
@@ -45,6 +46,8 @@ public class AppointmentService {
         if(appointmentRepository.existsByCollegeNumberAndPatientDniAndDateOfAppointmentAndTimeOfAppointment(appointmentInput.getCollegeNumber(),
                 appointmentInput.getPatientDni(),appointmentInput.getDateOfAppointment(), appointmentInput.getTimeOfAppointment())) throw new
                 AlreadyExistsException("Appointment already exists");
+        if(healthStaff.get().getDni().equals(appointmentInput.getPatientDni())) throw new InvalidException("" +
+               "Patient and health staff has to be different people");
         if (!appointmentIsPossibleDate(appointmentInput.getDateOfAppointment())) throw new DateOutOfRange("Date " +
                 "out of temporal window");
         if(!appointmentIsPossibleTime(appointmentInput)) throw new TimeOutOfRangeException("Time out of timetable"); //time before or after timetable of staff

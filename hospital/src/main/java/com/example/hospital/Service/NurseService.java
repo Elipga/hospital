@@ -1,9 +1,7 @@
 package com.example.hospital.Service;
 
-import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffOutputCNumberAndTimetable;
-import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
-import com.example.hospital.Controller.DTO.HealthStaff.NurseInput;
-import com.example.hospital.Controller.DTO.HealthStaff.NurseOutput;
+import com.example.hospital.Controller.DTO.HealthStaff.*;
+import com.example.hospital.Domain.Doctor;
 import com.example.hospital.Domain.Nurse;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Repository.DoctorRepository;
@@ -52,6 +50,15 @@ public class NurseService {
         if(nurseRepository.existsByDni(nurseInput.getDni())) throw new AlreadyExistsException
                 ("Nurse already exists");
         else {nurseRepository.save(newNurse);
+        }
+    }
+
+    public NurseOutput getNurseById(String collegeNumber) throws InvalidException, NurseDoesNotExists {
+        if (!nurseRepository.existsById(collegeNumber)) throw new NurseDoesNotExists("Nurse doesn´t exist");
+        else {
+            Optional<Nurse> nurse = nurseRepository.findById(collegeNumber);
+            NurseOutput nurseOutput = NurseOutput.getNurse(nurse.get());
+            return nurseOutput;
         }
     }
 

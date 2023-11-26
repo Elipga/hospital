@@ -1,9 +1,6 @@
 package com.example.hospital.Controller;
 
-import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffOutputCNumberAndTimetable;
-import com.example.hospital.Controller.DTO.HealthStaff.HealthStaffUpdate;
-import com.example.hospital.Controller.DTO.HealthStaff.NurseInput;
-import com.example.hospital.Controller.DTO.HealthStaff.NurseOutput;
+import com.example.hospital.Controller.DTO.HealthStaff.*;
 import com.example.hospital.Exception.*;
 import com.example.hospital.Service.NurseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +30,13 @@ public class NurseController {
     public ResponseEntity<List<NurseOutput>> getAllNurses() throws IsEmptyException, InvalidException {
             List<NurseOutput> nurses = nurseService.getAllNurses();
             return ResponseEntity.ok(nurses);
+    }
+
+    @Operation(summary = "Get nurse by college number")
+    @GetMapping("/nurses/{collegeNumber}")
+    public ResponseEntity<NurseOutput> getNurseById(@PathVariable String collegeNumber) throws InvalidException, NurseDoesNotExists {
+        NurseOutput nurseOutput = nurseService.getNurseById(collegeNumber);
+        return ResponseEntity.ok(nurseOutput);
     }
     @Operation(summary = "Set timetable of nurse", description = "Update Starting and Ending time")
     @PutMapping("/nurses/{collegeNumber}")
