@@ -24,7 +24,7 @@ public class NurseOutput {
     private String collegeNumber;
     @NotNull(message = "Name is null")
     @NotEmpty(message = "Name is null")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters without accent mark")
     private String name;
     @NotNull(message = "Starting time is null")
     @Schema(type = "String", pattern = "HH:mm:SS")

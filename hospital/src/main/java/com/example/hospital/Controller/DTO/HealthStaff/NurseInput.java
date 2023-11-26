@@ -22,7 +22,7 @@ public class NurseInput {
     @NotEmpty(message = "College number is null")
     @Pattern(regexp="^[0-9]+$", message = "College Number contains only numbers")
     private String collegeNumber;
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters without accent mark")
     private String name;
     @NotNull(message = "Starting time is null")
     @Schema(type = "String", pattern = "HH:mm:SS") //format of time input as a String

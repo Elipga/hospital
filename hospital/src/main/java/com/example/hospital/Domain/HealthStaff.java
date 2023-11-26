@@ -24,7 +24,7 @@ public class HealthStaff {
     @NotEmpty(message = "College number is null")
     @Pattern(regexp="^[0-9]+$")
     private String collegeNumber;
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters without accent mark")
     private String name;
     @NotNull(message = "Starting time is null")
     private LocalTime startingTime;

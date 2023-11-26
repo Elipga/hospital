@@ -22,7 +22,7 @@ public class DoctorInput {
     private String collegeNumber;
     @NotNull(message = "Name is null")
     @NotEmpty(message = "Name is null")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name contains only letters without accent mark")
     private String name;
     @Min(value = 0, message = "Minimum years experience is 0")
     @Max(value = 100, message = "Maximum years experience is 100")
