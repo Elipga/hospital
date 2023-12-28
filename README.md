@@ -15,7 +15,7 @@ In this project patients can have appointments with doctors and nurses. Appointm
 
 ### Technologies used:
 ##### - Java
-##### - Sapring Boot
+##### - Spring Boot
 ##### - MySQL
 ##### - Swagger
 ##### - Git
