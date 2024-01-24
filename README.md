@@ -11,7 +11,6 @@ In this project patients can have appointments with doctors and nurses. Appointm
 ##### 4. Check availability of health staff for next temporal window
 ##### 5. Check patient's appointments for a given day, ordered by hour
 ##### 6. Check appointments of a doctor for entire week of next temporal window, ordered by days and hours.
-##### 7. Users page
 
 ### Technologies used:
 ##### - Java
