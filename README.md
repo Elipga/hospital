@@ -22,4 +22,4 @@ In this project patients can have appointments with doctors and nurses. Appointm
 
 ## Author
 #### Elisa Pérez García
-#### Email: 3bperezelisa@gmail.co
+#### Email: 3bperezelisa@gmail.com
