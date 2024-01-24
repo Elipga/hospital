@@ -17,7 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import javax.print.Doc;
 import java.time.LocalTime;
@@ -78,25 +80,35 @@ class DoctorServiceTest {
         //propiedad a propiedad, ya que no se pueden comparar los objetos en sí porque cada uno apunta a una dirección de memoria
     }
 
-    /*@Test
-    void addDoctor() throws InvalidException, AlreadyExistsException {
+    @Test
+    void givenADoctor_WhenCallToAddDoctor_thenReturnDoctorSavedIsNotNull() throws InvalidException, AlreadyExistsException {
         String startString = "15:30:00";
         String endString = "17:00:00";
 
         LocalTime startingTime = LocalTime.parse(startString);
         LocalTime endingTime = LocalTime.parse(endString);
-        Doctor doctor = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, 1);
-        DoctorInput doctorInput = new DoctorInput("12345678A", "123456789", "Elisa",1,startingTime, endingTime);
 
-        when(doctorRepository.save(doctor)).thenReturn(doctor);
-        when(doctorRepository.existsById(anyString())).thenReturn(false);
-        when(doctorRepository.existsByDni(anyString())).thenReturn(false);
-        when(nurseRepository.existsById(anyString())).thenReturn(false);
-        when(nurseRepository.existsByDni(anyString())).thenReturn(false);
+
+        Doctor doctor = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, 1);
+        DoctorInput doctorInput = new DoctorInput("12345678A", "123456789", "Elisa", 1, startingTime, endingTime);
+
+        when(doctorRepository.save(any(Doctor.class))).thenAnswer(new Answer<Doctor>() {
+            @Override
+            public Doctor answer(InvocationOnMock invocation) throws Throwable {
+                Doctor savedDoctor = new Doctor("12345678A", "123456789", "Elisa",startingTime, endingTime, 1);
+                return savedDoctor;
+            }
+        });
+
         doctorService.addDoctor(doctorInput);
 
+        Assertions.assertNotNull(doctor.getCollegeNumber());
+        Assertions.assertEquals("Elisa", doctor.getName());
 
-        //verify(doctorRepository, times(1)).save(doctor); //call method once
-        Assertions.assertTrue(doctorRepository.existsById(doctor.getCollegeNumber()));
-    }*/
+        verify(doctorRepository, times(1)).save(any());
+        verify(doctorRepository, times(1)).existsById(anyString());
+        verify(doctorRepository, times(1)).existsByDni(anyString());
+
+
+    }
 }
